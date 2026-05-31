@@ -44,7 +44,7 @@ body {
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 0 !important;
+    z-index: -2 !important; /* Colocado detrás del contenido de Streamlit */
     overflow: hidden !important;
     pointer-events: none !important;
     background: #050509 url("establecimiento.png") center center / cover no-repeat !important;
@@ -327,19 +327,20 @@ section[data-testid="stSidebar"] hr {
 
 div[data-testid="stNumberInput"] input {
     color: #2ecc71 !important;
-    background-color: #111424 !important;
+    background-color: rgba(11, 12, 20, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
     font-size: 20px !important;
     font-weight: 900 !important;
     text-shadow: 0 0 8px rgba(46,204,113,0.5) !important;
-    border: 2px solid #222538 !important;
-    transition: transform 0.1s ease, box-shadow 0.1s ease !important;
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.2s ease !important;
 }
 
 div[data-testid="stNumberInput"] input:focus,
 div[data-testid="stNumberInput"] input:active {
     transform: scale(1.08) !important;
-    box-shadow: 0 0 12px rgba(46,204,113,0.4) !important;
     border-color: #2ecc71 !important;
+    box-shadow: 0 0 12px rgba(46,204,113,0.4) !important;
 }
 
 /* ============================================================================
@@ -895,7 +896,7 @@ div[data-testid="stTextInput"]:not(:has(input[key*="search_bar_"])) input {
 .video-overlay-legibilidad {
     position: fixed !important;
     inset: 0 !important;
-    z-index: 1 !important;
+    z-index: -1 !important; /* Colocado justo detrás de Streamlit y delante del video */
     pointer-events: none !important;
     background:
         radial-gradient(circle at 50% 15%, rgba(212,175,55,0.12), transparent 28%),
@@ -1044,7 +1045,9 @@ section[data-testid="stSidebar"] {
 }
 
 .yape-qr-box {
-    width: min(330px, 92vw) !important;
+    width: 100% !important;
+    max-width: 330px !important;
+    box-sizing: border-box !important;
     margin: 10px auto 14px auto !important;
     padding: 16px !important;
     border-radius: 12px !important;
@@ -1141,17 +1144,23 @@ section[data-testid="stSidebar"] {
 .pago-whatsapp { border-color: rgba(39,174,96,0.80) !important; }
 
 .pago-detalle-premium {
-    width: min(460px, 94vw) !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-sizing: border-box !important;
     margin: 10px auto 14px auto !important;
     padding: 18px !important;
     border-radius: 12px !important;
     text-align: center !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 7px !important;
+    display: block !important;
     box-shadow: 0 12px 28px rgba(0,0,0,0.48) !important;
     backdrop-filter: blur(12px) !important;
+}
+.pago-detalle-premium span,
+.pago-detalle-premium strong,
+.pago-detalle-premium small,
+.pago-detalle-premium p {
+    display: block !important;
+    margin: 8px auto !important;
 }
 
 .pago-detalle-premium span {
@@ -1212,37 +1221,55 @@ section[data-testid="stSidebar"] {
     text-shadow: 0 0 12px rgba(46,204,113,0.48) !important;
 }
 
-/* Grillas reforzadas contra el apilado móvil de Streamlit */
-[data-testid="stHorizontalBlock"].grilla-productos,
-[data-testid="stHorizontalBlock"].grilla-categorias,
-div[data-testid="stHorizontalBlock"]:has(.tarjeta-producto-individual),
-div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) {
-    display: grid !important;
-    width: 100% !important;
-    align-items: stretch !important;
-    grid-auto-flow: row !important;
+/* WIDGETS DE ENTRADA PREMIUM — GLASSMORPHISM Y ACENTOS ORO */
+div[data-testid="stTextInput"] input,
+div[data-testid="stSelectbox"] div[data-baseweb="select"] {
+    background-color: rgba(11, 12, 20, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
 }
 
-[data-testid="stHorizontalBlock"].grilla-productos,
-div[data-testid="stHorizontalBlock"]:has(.tarjeta-producto-individual) {
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 14px !important;
+div[data-testid="stTextInput"] input:focus,
+div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within {
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35) !important;
 }
 
-[data-testid="stHorizontalBlock"].grilla-categorias,
-div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) {
-    grid-template-columns: repeat(4, minmax(160px, 1fr)) !important;
-    gap: 18px !important;
+/* PESTAÑAS SUBCATEGORÍAS ESTILO NETFLIX */
+button.btn-guadalupe-subcategoria {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #cccccc !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    padding: 4px 10px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease !important;
 }
 
-[data-testid="stHorizontalBlock"].grilla-productos > [data-testid="column"],
-[data-testid="stHorizontalBlock"].grilla-categorias > [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(.tarjeta-producto-individual) > [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) > [data-testid="column"] {
-    width: auto !important;
-    min-width: 0 !important;
-    flex: none !important;
-    display: block !important;
+button.btn-guadalupe-subcategoria:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Subcategoría activa (Glow dorado de acento) */
+button.btn-subcategoria-activa {
+    background: rgba(212, 175, 55, 0.15) !important;
+    color: #d4af37 !important;
+    border: 1px solid #d4af37 !important;
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3) !important;
+    text-shadow: 0 0 6px rgba(212, 175, 55, 0.4) !important;
 }
 
 div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) > [data-testid="column"] > div,
@@ -1324,20 +1351,63 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         font-size: 12px !important;
     }
 
+    /* EVITAR DESPLAZAMIENTO / SQUEEZING DEL CONTENIDO PRINCIPAL EN MÓVIL */
+    div[data-testid="stAppViewContainer"] {
+        display: block !important;
+    }
+    div[data-testid="stMainBlockContainer"],
+    .main .block-container,
+    [data-testid="stMain"] {
+        margin-left: 0 !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+
     section[data-testid="stSidebar"] {
+        position: fixed !important;
+        top: 0 !important;
         left: 0 !important;
-        right: auto !important;
-        inset-inline-start: 0 !important;
-        inset-inline-end: auto !important;
-        transform: none !important;
+        height: 100vh !important;
+        z-index: 999999 !important; /* Por encima del contenido */
+        
+        /* Ancho inicial más delgado y capacidad de redimensionado manual */
+        width: 280px !important;
+        min-width: 180px !important;
+        max-width: 85vw !important;
+        resize: horizontal !important;
+        overflow: auto !important;
+        
         transform-origin: top left !important;
-        border-right: 1px solid rgba(212,175,55,0.35) !important;
+        border-right: 2px solid #d4af37 !important; /* Borde dorado de división */
         border-left: none !important;
         box-shadow: 12px 0 34px rgba(0,0,0,0.62), 1px 0 0 rgba(212,175,55,0.45) !important;
     }
 
+    /* Línea indicadora visual de arrastre/resize */
+    section[data-testid="stSidebar"]::after {
+        content: "" !important;
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        width: 4px !important;
+        height: 100% !important;
+        background: rgba(212,175,55,0.2) !important;
+        cursor: ew-resize !important;
+        pointer-events: none !important;
+        transition: background 0.2s ease !important;
+    }
+    section[data-testid="stSidebar"]:hover::after {
+        background: rgba(212,175,55,0.6) !important;
+    }
+
     section[data-testid="stSidebar"] > div,
     section[data-testid="stSidebar"] [data-testid="stSidebarContent"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
         background:
             radial-gradient(circle at top right, rgba(212,175,55,0.14), transparent 35%),
             linear-gradient(180deg, rgba(9,11,20,0.98), rgba(4,5,10,0.98)) !important;
@@ -1351,6 +1421,37 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         right: auto !important;
     }
 
+    /* Respeta el estado cerrado de Streamlit: sin franja lateral ni oscurecimiento fantasma. */
+    section[data-testid="stSidebar"][aria-expanded="false"],
+    section[data-testid="stSidebar"][aria-hidden="true"],
+    section[data-testid="stSidebar"]:not(:has([data-testid="stSidebarContent"])) {
+        transform: translateX(-110%) !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+        box-shadow: none !important;
+        width: 0 !important;
+        min-width: 0 !important;
+        max-width: 0 !important;
+        border: none !important;
+    }
+
+    section[data-testid="stSidebar"][aria-expanded="true"],
+    section[data-testid="stSidebar"]:not([aria-expanded="false"]):not([aria-hidden="true"]) {
+        visibility: visible !important;
+        pointer-events: auto !important;
+    }
+
+    /* Grillas reforzadas contra el apilado móvil de Streamlit */
+    [data-testid="stHorizontalBlock"].grilla-productos,
+    [data-testid="stHorizontalBlock"].grilla-categorias,
+    div[data-testid="stHorizontalBlock"]:has(.tarjeta-producto-individual),
+    div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) {
+        display: grid !important;
+        width: 100% !important;
+        align-items: stretch !important;
+        grid-auto-flow: row !important;
+    }
+
     [data-testid="stHorizontalBlock"].grilla-productos,
     div[data-testid="stHorizontalBlock"]:has(.tarjeta-producto-individual) {
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
@@ -1361,6 +1462,41 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
     div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
         gap: 8px !important;
+    }
+
+    [data-testid="stHorizontalBlock"].grilla-productos > [data-testid="column"],
+    [data-testid="stHorizontalBlock"].grilla-categorias > [data-testid="column"],
+    div[data-testid="stHorizontalBlock"]:has(.tarjeta-producto-individual) > [data-testid="column"],
+    div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) > [data-testid="column"] {
+        width: auto !important;
+        min-width: 0 !important;
+        flex: none !important;
+        display: block !important;
+    }
+
+    /* Grid de 3 columnas para subcategorías en móviles (Estilo Netflix) */
+    div[data-testid="stHorizontalBlock"]:has(button.btn-guadalupe-subcategoria) {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+        margin-bottom: 18px !important;
+    }
+    
+    div[data-testid="stHorizontalBlock"]:has(button.btn-guadalupe-subcategoria) > [data-testid="column"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        flex: none !important;
+        display: block !important;
+    }
+    
+    div[data-testid="stHorizontalBlock"]:has(button.btn-guadalupe-subcategoria) div.stButton > button {
+        min-height: 32px !important;
+        height: 32px !important;
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+        border-radius: 4px !important;
     }
 
     div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stButton > button {
@@ -1540,4 +1676,3 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         display: none !important;
     }
 }
-

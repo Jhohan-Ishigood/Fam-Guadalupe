@@ -54,8 +54,36 @@ def convertir_base64(ruta_archivo):
 
 
 def guardar_json(ruta, datos):
-    with open(ruta, "w", encoding="utf-8") as archivo:
-        json.dump(datos, archivo, indent=4, ensure_ascii=False)
+    ruta_tmp = ruta + ".tmp"
+    ruta_bak = ruta + ".bak"
+    try:
+        # Escribir de forma segura en archivo temporal
+        with open(ruta_tmp, "w", encoding="utf-8") as archivo:
+            json.dump(datos, archivo, indent=4, ensure_ascii=False)
+            archivo.flush()
+            try:
+                os.fsync(archivo.fileno())
+            except:
+                pass
+        
+        # Generar copia de respaldo .bak antes de sobrescribir el principal
+        if os.path.exists(ruta):
+            try:
+                if os.path.exists(ruta_bak):
+                    os.remove(ruta_bak)
+                os.rename(ruta, ruta_bak)
+            except:
+                pass
+        
+        # Intercambio atómico
+        os.replace(ruta_tmp, ruta)
+    except Exception as e:
+        if os.path.exists(ruta_tmp):
+            try:
+                os.remove(ruta_tmp)
+            except:
+                pass
+        raise e
 
 
 def cargar_menu():
@@ -85,13 +113,26 @@ def cargar_menu():
             "foto": FOTO_DEFAULT
         }
     }
-    menu = inventario
+    menu = None
     if os.path.exists(RUTA_MENU):
         try:
             with open(RUTA_MENU, "r", encoding="utf-8") as archivo:
                 menu = json.load(archivo)
-        except:
-            menu = inventario
+        except (json.JSONDecodeError, TypeError, ValueError):
+            # Intentar cargar desde el respaldo en caso de corrupción
+            ruta_bak = RUTA_MENU + ".bak"
+            if os.path.exists(ruta_bak):
+                try:
+                    with open(ruta_bak, "r", encoding="utf-8") as archivo:
+                        menu = json.load(archivo)
+                    st.warning("⚠️ Archivo de menú principal corrupto. Se restauró desde el respaldo automático.")
+                except:
+                    pass
+            if menu is None:
+                st.error("🚨 Error grave: Base de datos de menú corrupta y sin copia de respaldo válida.")
+
+    if menu is None:
+        menu = inventario
 
     # Migración de productos anteriores
     for prod, info in menu.items():
@@ -121,23 +162,34 @@ def cargar_categorias():
         "✏️ Útiles escolares": ["Todos", "Cuadernos", "Plumones", "Lapiceros"],
         "🛠️ Ferretería": ["Todos", "Herramientas", "Pinturas"]
     }
+    datos = None
     if os.path.exists(RUTA_CATEGORIAS):
         try:
             with open(RUTA_CATEGORIAS, "r", encoding="utf-8") as archivo:
                 datos = json.load(archivo)
-                if isinstance(datos, dict):
-                    return datos
-                else:
-                    datos_nuevos = {}
-                    for cat in datos:
-                        if cat != "Todos":
-                            datos_nuevos[cat] = ["Todos"]
-                    if not datos_nuevos:
-                        return categorias_default
-                    return datos_nuevos
-        except:
+        except (json.JSONDecodeError, TypeError, ValueError):
+            ruta_bak = RUTA_CATEGORIAS + ".bak"
+            if os.path.exists(ruta_bak):
+                try:
+                    with open(ruta_bak, "r", encoding="utf-8") as archivo:
+                        datos = json.load(archivo)
+                    st.warning("⚠️ Archivo de categorías corrupto. Se restauró desde el respaldo automático.")
+                except:
+                    pass
+    
+    if datos is None:
+        return categorias_default
+
+    if isinstance(datos, dict):
+        return datos
+    else:
+        datos_nuevos = {}
+        for cat in datos:
+            if cat != "Todos":
+                datos_nuevos[cat] = ["Todos"]
+        if not datos_nuevos:
             return categorias_default
-    return categorias_default
+        return datos_nuevos
 
 
 UNIDADES_VENTA = {
@@ -294,25 +346,21 @@ def render_panel_pedido_movil():
         return
     items_html = ""
     for item in st.session_state.carrito:
-        items_html += f'''
-        <div class="bottom-sheet-item">
-            <span>{item["producto"]}</span>
-            <b>{formatear_cantidad(item["cantidad"])} {item.get("unidad", "unidad")} · S/{item["subtotal"]:.2f}</b>
-        </div>
-        '''
-    st.markdown(f'''
-    <div class="pedido-bottom-sheet">
-        <input id="pedido-sheet-toggle" class="pedido-sheet-toggle" type="checkbox">
-        <label for="pedido-sheet-toggle" class="pedido-sheet-handle">
-            <span class="pedido-sheet-barra"></span>
-            <strong>🛒 {len(st.session_state.carrito)} productos · S/{st.session_state.total:.2f}</strong>
-            <small>Desliza hacia arriba</small>
-        </label>
-        <div class="pedido-sheet-contenido">
-            {items_html}
-        </div>
-    </div>
-    ''', unsafe_allow_html=True)
+        items_html += f'''<div class="bottom-sheet-item">
+<span>{item["producto"]}</span>
+<b>{formatear_cantidad(item["cantidad"])} {item.get("unidad", "unidad")} · S/{item["subtotal"]:.2f}</b>
+</div>'''
+    st.markdown(f'''<div class="pedido-bottom-sheet">
+<input id="pedido-sheet-toggle" class="pedido-sheet-toggle" type="checkbox">
+<label for="pedido-sheet-toggle" class="pedido-sheet-handle">
+<span class="pedido-sheet-barra"></span>
+<strong>🛒 {len(st.session_state.carrito)} productos · S/{st.session_state.total:.2f}</strong>
+<small>Desliza hacia arriba</small>
+</label>
+<div class="pedido-sheet-contenido">
+{items_html}
+</div>
+</div>''', unsafe_allow_html=True)
 
 
 def generar_proforma_html(carrito, total, fecha):
@@ -420,9 +468,9 @@ URL_LOGO  = convertir_base64(os.path.join(BASE_DIR, "Logotipo.png"))
 URL_QR    = convertir_base64(os.path.join(BASE_DIR, "miqr1.png"))
 
 # URLs de video — usando static local si está disponible o Cloudinary de respaldo
-URL_VIDEO_PC    = "/app/static/videofondopc.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondopc.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
-URL_VIDEO_MOVIL = "/app/static/videofondocelular.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondocelular.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
-URL_VIDEO_LOGO  = "/app/static/logovideo.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "logovideo.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
+URL_VIDEO_PC    = "/static/videofondopc.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondopc.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
+URL_VIDEO_MOVIL = "/static/videofondocelular.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondocelular.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
+URL_VIDEO_LOGO  = "/static/logovideo.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "logovideo.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
 
 # =========================================================
 # CSS MAESTRO — Solo variables Python aquí, resto en style.css externo
@@ -572,6 +620,7 @@ const observer = new MutationObserver((mutations) => {{
             'btn-guadalupe-inicio',
             'btn-guadalupe-categoria',
             'btn-guadalupe-subcategoria',
+            'btn-subcategoria-activa',
             'btn-guadalupe-volver',
             'btn-guadalupe-carrito',
             'btn-guadalupe-confirmar',
@@ -585,6 +634,9 @@ const observer = new MutationObserver((mutations) => {{
             button.classList.add('btn-guadalupe-categoria');
         }} else if (subcategoriasGuadalupe.has(textNormalizado)) {{
             button.classList.add('btn-guadalupe-subcategoria');
+            if (text.includes('✅')) {{
+                button.classList.add('btn-subcategoria-activa');
+            }}
         }} else if (text.includes('CATEGORÍAS') || text.includes('CATEGORIAS') || text.includes('VOLVER') || text.includes('INICIO')) {{
             button.classList.add('btn-guadalupe-volver');
         }} else if (text.includes('SIMULAR') || text.includes('CARRITO') || text.includes('NUEVA ORDEN')) {{
@@ -601,6 +653,23 @@ const observer = new MutationObserver((mutations) => {{
     }});
 }});
 observer.observe(document.body, {{ childList: true, subtree: true }});
+
+// En móvil Streamlit puede recordar el sidebar semiabierto; lo cerramos una sola vez al cargar.
+function cerrarSidebarMovilInicial() {{
+    if (window.innerWidth > 768 || sessionStorage.getItem('guadalupe_sidebar_cerrado_inicial')) return;
+    setTimeout(() => {{
+        const sidebar = document.querySelector('section[data-testid="stSidebar"]');
+        if (!sidebar) return;
+        const rect = sidebar.getBoundingClientRect();
+        const estaVisible = rect.width > 20 && rect.right > 20;
+        const botonCerrar = sidebar.querySelector('button[kind="headerNoPadding"], button');
+        if (estaVisible && botonCerrar) {{
+            botonCerrar.click();
+            sessionStorage.setItem('guadalupe_sidebar_cerrado_inicial', '1');
+        }}
+    }}, 650);
+}}
+cerrarSidebarMovilInicial();
 
 // Mantiene el video de fondo cerca del punto donde iba tras cada rerender de Streamlit.
 function estabilizarVideosDeFondo() {{
@@ -760,14 +829,14 @@ if st.session_state.pantalla == "bienvenida":
     ''', unsafe_allow_html=True)
 
     with st.expander("🏦 BANCO DE LA NACIÓN"):
-        st.markdown("""
-        #### DATOS BANCARIOS
-        **Número de cuenta:** 04-762-855629
-
-        **Titular:** Segundo Melquiades Guadalupe Sanchez
-
-        > Realiza tu depósito y envíanos el comprobante por WhatsApp.
-        """)
+        st.markdown('''
+        <div class="pago-detalle-premium pago-banco-detalle">
+            <span>Cuenta bancaria</span>
+            <strong>04-762-855629</strong>
+            <small>Titular: Segundo Melquiades Guadalupe Sanchez</small>
+            <p>Realiza tu depósito y envía el comprobante por WhatsApp.</p>
+        </div>
+        ''', unsafe_allow_html=True)
 
     with st.expander("🟣 YAPE — +51 950 239 350"):
         if URL_QR:
@@ -789,12 +858,14 @@ if st.session_state.pantalla == "bienvenida":
             """)
 
     with st.expander("🟢 CONTACTO DIRECTO — WHATSAPP"):
-        st.markdown("""
-        #### WHATSAPP
-        **Número:** +51 950 239 350
-
-        > Escríbenos por WhatsApp para coordinar tu pedido y entrega.
-        """)
+        st.markdown('''
+        <div class="pago-detalle-premium pago-whatsapp-detalle">
+            <span>Coordinación directa</span>
+            <strong>+51 950 239 350</strong>
+            <small>Envía tu pedido, captura o comprobante.</small>
+            <p>Te responderemos para confirmar stock, pago y entrega.</p>
+        </div>
+        ''', unsafe_allow_html=True)
         st.link_button("💬 Abrir WhatsApp", "https://wa.me/51950239350", use_container_width=True)
 
     st.markdown('</div>', unsafe_allow_html=True)
@@ -814,11 +885,12 @@ elif st.session_state.pantalla == "seleccion_categorias":
     st.markdown("<p style='text-align:center;color:#aaa;font-size:16px;margin-bottom:30px;'>Selecciona una sección para explorar nuestros productos</p>", unsafe_allow_html=True)
 
     categorias_principales = list(st.session_state.lista_categorias.keys())
+    num_cols = len(categorias_principales) if categorias_principales else 4
     
-    # Grilla de categorías principales: 6 columnas PC / 3 columnas móvil
-    for idx in range(0, len(categorias_principales), 6):
-        grupo = categorias_principales[idx:idx+6]
-        cols = st.columns(6, gap="medium")
+    # Grilla de categorías principales: columnas proporcionales en PC / controladas por CSS en móvil
+    for idx in range(0, len(categorias_principales), num_cols):
+        grupo = categorias_principales[idx:idx+num_cols]
+        cols = st.columns(num_cols, gap="medium")
         for j, cat in enumerate(grupo):
             with cols[j]:
                 partes = cat.split(" ", 1)
@@ -862,6 +934,24 @@ elif st.session_state.pantalla == "catalogo":
             st.rerun()
     with col_title:
         st.markdown(f"<h1 class='titulo-principal' style='text-align:left;margin-top:0px !important;'>🛍️ {st.session_state.categoria_principal_activa}</h1>", unsafe_allow_html=True)
+
+    # ── SELECTOR RÁPIDO DE CATEGORÍAS ──
+    lista_cats_rapidas = list(st.session_state.lista_categorias.keys())
+    if st.session_state.categoria_principal_activa in lista_cats_rapidas:
+        idx_rapida = lista_cats_rapidas.index(st.session_state.categoria_principal_activa)
+    else:
+        idx_rapida = 0
+        
+    cat_rapida_sel = st.selectbox(
+        "📁 Cambiar de sección:",
+        lista_cats_rapidas,
+        index=idx_rapida,
+        key="cat_rapida_selector"
+    )
+    if cat_rapida_sel != st.session_state.categoria_principal_activa:
+        st.session_state.categoria_principal_activa = cat_rapida_sel
+        st.session_state.categoria_activa = "Todos"
+        st.rerun()
 
     # ── BUSCADOR ──
     busqueda = st.text_input(
@@ -1081,19 +1171,72 @@ elif st.session_state.pantalla == "carrito":
         with col1:
             if st.button("💾 CONFIRMAR PEDIDO", use_container_width=True, key="btn_confirmar", disabled=st.session_state.bloqueo_stock):
                 if not st.session_state.bloqueo_stock:
-                    st.session_state.bloqueo_stock = True
+                    # 1. Cargar el menú fresco desde el disco
+                    menu_fresco = cargar_menu()
+                    problemas_stock = []
+                    
+                    # 2. Validar que haya stock suficiente para cada item
                     for item in st.session_state.carrito:
-                        prod     = item["producto"]
+                        prod = item["producto"]
                         cantidad = float(item["cantidad"])
-                        stock_actual = float(st.session_state.menu_dinamico[prod]["stock"])
-                        nuevo_stock  = max(0, stock_actual - cantidad)
-                        st.session_state.menu_dinamico[prod]["stock"]      = nuevo_stock
-                        st.session_state.menu_dinamico[prod]["disponible"] = nuevo_stock > 0
-                    guardar_json(RUTA_MENU, st.session_state.menu_dinamico)
-                    st.success("✔ Pedido confirmado correctamente")
-                    st.balloons()
-                    time.sleep(1)
-                    st.rerun()
+                        
+                        if prod not in menu_fresco:
+                            problemas_stock.append(f"❌ El producto '{prod}' ya no está disponible en el catálogo.")
+                            continue
+                        
+                        stock_fresco = float(menu_fresco[prod].get("stock", 0))
+                        disponible = menu_fresco[prod].get("disponible", True)
+                        
+                        if not disponible or stock_fresco <= 0:
+                            problemas_stock.append(f"❌ '{prod}' se ha agotado.")
+                        elif stock_fresco < cantidad:
+                            problemas_stock.append(f"⚠️ '{prod}' solo tiene {formatear_cantidad(stock_fresco)} {item.get('unidad', 'unidad')} en stock (solicitaste {formatear_cantidad(cantidad)}).")
+                    
+                    # 3. Si hay problemas de stock, cancelar y actualizar el carrito
+                    if problemas_stock:
+                        for msg in problemas_stock:
+                            st.error(msg)
+                        st.error("Por favor, revisa tu carrito y ajusta las cantidades antes de confirmar.")
+                        
+                        # Actualizar selecciones_pedido al máximo disponible
+                        for item in st.session_state.carrito:
+                            prod = item["producto"]
+                            if prod in menu_fresco:
+                                stock_max = float(menu_fresco[prod].get("stock", 0))
+                                qty_actual = float(st.session_state.selecciones_pedido.get(prod, 0))
+                                if qty_actual > stock_max:
+                                    if stock_max <= 0:
+                                        st.session_state.selecciones_pedido.pop(prod, None)
+                                    else:
+                                        st.session_state.selecciones_pedido[prod] = stock_max
+                                        st.session_state[f"qty_{prod}"] = stock_max
+                            else:
+                                st.session_state.selecciones_pedido.pop(prod, None)
+                                
+                        actualizar_carrito_desde_selecciones()
+                        time.sleep(3)
+                        st.rerun()
+                    else:
+                        # 4. Si hay stock suficiente, proceder con la confirmación y guardar
+                        st.session_state.bloqueo_stock = True
+                        for item in st.session_state.carrito:
+                            prod = item["producto"]
+                            cantidad = float(item["cantidad"])
+                            stock_actual = float(menu_fresco[prod]["stock"])
+                            nuevo_stock = max(0.0, stock_actual - cantidad)
+                            
+                            menu_fresco[prod]["stock"] = nuevo_stock
+                            menu_fresco[prod]["disponible"] = nuevo_stock > 0
+                        
+                        # Guardar la base de datos fresca actualizada
+                        guardar_json(RUTA_MENU, menu_fresco)
+                        # Sincronizar el estado de la sesión
+                        st.session_state.menu_dinamico = menu_fresco
+                        
+                        st.success("✔ Pedido confirmado correctamente")
+                        st.balloons()
+                        time.sleep(1)
+                        st.rerun()
                 else:
                     st.info("Este pedido ya fue procesado.")
 
