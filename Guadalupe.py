@@ -519,6 +519,7 @@ st.markdown(f'''
 
 <!-- DOM OBSERVER PARA ACORDEONES Y GRILLAS -->
 <script>
+const subcategoriasGuadalupe = new Set({json.dumps(sorted({sub for subs in st.session_state.lista_categorias.values() for sub in subs}), ensure_ascii=False)}.map(item => item.toUpperCase()));
 const observer = new MutationObserver((mutations) => {{
     // 1. Expanders
     const summaries = document.querySelectorAll('div[data-testid="stExpander"] summary');
@@ -566,6 +567,7 @@ const observer = new MutationObserver((mutations) => {{
     // 5. Botones por intención visual
     document.querySelectorAll('button').forEach(button => {{
         const text = (button.textContent || '').trim().toUpperCase();
+        const textNormalizado = text.replace(/^[^A-ZÁÉÍÓÚÜÑ0-9]+/i, '').trim();
         button.classList.remove(
             'btn-guadalupe-inicio',
             'btn-guadalupe-categoria',
@@ -581,7 +583,7 @@ const observer = new MutationObserver((mutations) => {{
             button.classList.add('btn-guadalupe-inicio');
         }} else if (text === 'ENTRAR' || text.startsWith('ENTRAR ')) {{
             button.classList.add('btn-guadalupe-categoria');
-        }} else if (text.includes('TODOS') || text.includes('PARLANTES') || text.includes('AUDÍFONOS') || text.includes('AUDIFONOS')) {{
+        }} else if (subcategoriasGuadalupe.has(textNormalizado)) {{
             button.classList.add('btn-guadalupe-subcategoria');
         }} else if (text.includes('CATEGORÍAS') || text.includes('CATEGORIAS') || text.includes('VOLVER') || text.includes('INICIO')) {{
             button.classList.add('btn-guadalupe-volver');
@@ -938,12 +940,12 @@ elif st.session_state.pantalla == "catalogo":
 
                     if stock <= 3:
                         st.markdown(
-                            f'<div class="mini-stock-alerta">🔥 ¡SOLO QUEDAN {stock}!</div>',
+                            f'<div class="mini-stock-alerta">🔥 ¡SOLO QUEDAN {formatear_cantidad(stock)}!</div>',
                             unsafe_allow_html=True
                         )
                     else:
                         st.markdown(
-                            f'<div class="mini-stock-normal">📦 Stock: {stock}</div>',
+                            f'<div class="mini-stock-normal">📦 Stock: {formatear_cantidad(stock)}</div>',
                             unsafe_allow_html=True
                         )
 
