@@ -363,7 +363,9 @@ div[data-testid="stTextInput"]:has(input[key*="search_bar_"]) input:focus {
    ============================================================================ */
 
 /* FORZAR SCROLL HORIZONTAL DE SUBCATEGORÍAS ESTILO NETFLIX (MÓVIL Y PC) */
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]),
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -380,24 +382,32 @@ div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias {
     border: 1px solid rgba(255, 255, 0, 0.25) !important;
     border-radius: 30px !important;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 0, 0.05) !important;
+    justify-content: flex-start !important; /* Juntar los botones estrechamente sin huecos vacíos */
 }
 
 /* Ocultar barra de scroll para limpieza visual */
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias::-webkit-scrollbar {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias::-webkit-scrollbar,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"])::-webkit-scrollbar,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"])::-webkit-scrollbar {
     display: none !important;
 }
 
 /* Forzar que las columnas de Streamlit dentro del scroll no se apilen y tengan ancho automático */
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias > [data-testid="column"] {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) [data-testid="column"] {
     flex: 0 0 auto !important;
     width: auto !important;
+    min-width: auto !important;
     max-width: none !important;
-    min-width: 0 !important;
     display: block !important;
+    margin: 0 !important;
 }
 
 /* Forzar ancho automático y forma de píldora en los botones de subcategoría */
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) div.stButton > button,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) div.stButton > button,
 button.btn-guadalupe-subcategoria {
     border-radius: 20px !important; /* Estilo píldora */
     padding: 6px 16px !important;
@@ -408,7 +418,8 @@ button.btn-guadalupe-subcategoria {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: auto !important;
+    width: max-content !important;
+    min-width: 0 !important;
 }
 
 /* ============================================================================
@@ -1816,54 +1827,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
     font-weight: normal !important;
 }
 
-/* Píldora redondeada y scroll horizontal para subcategorías (PC y Móvil) */
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias,
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]),
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    width: 100% !important;
-    gap: 8px !important;
-    padding: 8px 4px !important;
-    justify-content: flex-start !important; /* Juntar los botones estrechamente sin huecos vacíos */
-}
 
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) [data-testid="column"] {
-    flex: 0 0 auto !important;
-    width: auto !important;
-    min-width: auto !important;
-    max-width: none !important;
-    display: block !important;
-    margin: 0 !important;
-}
-
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) div.stButton > button,
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) div.stButton > button {
-    min-height: 34px !important;
-    height: 34px !important;
-    font-size: 13px !important;
-    padding: 4px 16px !important;
-    border-radius: 20px !important;
-    width: max-content !important;
-    min-width: 0 !important;
-}
-
-@media (max-width: 768px) {
-    div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
-    div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) div.stButton > button,
-    div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) div.stButton > button {
-        font-size: 11px !important;
-        padding: 4px 12px !important;
-        width: max-content !important;
-        min-width: 0 !important;
-    }
-}
 
 /* Selector de cantidad horizontal clásico en PC (➖, Qty, ➕) */
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
