@@ -1830,8 +1830,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     justify-content: flex-start !important; /* Juntar los botones estrechamente sin huecos vacíos */
 }
 
-div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias > [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) > [data-testid="column"] {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) [data-testid="column"] {
     flex: 0 0 auto !important;
     width: auto !important;
     min-width: auto !important;
@@ -1861,7 +1861,7 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     }
 }
 
-/* Asegurar que el selector de cantidad se mantenga horizontal en PC y móvil, evitando afectar grillas externas */
+/* Selector de cantidad horizontal clásico en PC (➖, Qty, ➕) */
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
 div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
     display: flex !important;
@@ -1898,7 +1898,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     min-width: 0 !important;
 }
 
-/* Ajustes de tamaño compacto para los botones del selector en móvil */
+/* Ajustes de tamaño compacto para los botones del selector en PC */
 div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button {
     height: 32px !important;
     min-height: 32px !important;
@@ -1910,7 +1910,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     border-radius: 6px !important;
 }
 
-/* Reducir altura y texto de cantidad central para que entre cabalito debajo de la foto */
+/* Reducir altura y texto de cantidad central para que entre cabalito debajo de la foto en PC */
 .qty-display-premium {
     height: 32px !important;
     min-height: 32px !important;
@@ -1920,28 +1920,95 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
 }
 
 @media (max-width: 768px) {
-    /* Forzar diseño horizontal estricto en móviles y anular la regla de colapso vertical de Streamlit */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
+    /* Selector de cantidad integrado estilo premium exclusivo para móvil ( [ 0   -  + ] ) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        gap: 0 !important;
+        margin-top: 8px !important;
+        border: 1px solid rgba(255, 255, 0, 0.25) !important;
+        background: rgba(11, 12, 20, 0.60) !important;
+        border-radius: 8px !important;
+        padding: 4px 10px !important;
+        height: 42px !important;
+        box-sizing: border-box !important;
+    }
+
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
         width: auto !important;
         min-width: auto !important;
         max-width: none !important;
-        flex: 1 1 auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
     }
-    
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
+
+    /* Columna 2 (Val / Qty): orden 1 (izquierda) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
+        order: 1 !important;
+        flex: 1 1 auto !important;
+        justify-content: flex-start !important;
+    }
+
+    /* Columna 1 (Dec / -): orden 2 (derecha-medio) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1) {
+        order: 2 !important;
         flex: 0 0 32px !important;
         width: 32px !important;
-        min-width: 32px !important;
+        justify-content: center !important;
     }
-    
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
-        flex: 1 1 auto !important;
-        width: auto !important;
-        min-width: 0 !important;
+
+    /* Columna 3 (Inc / +): orden 3 (extremo derecha) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
+        order: 3 !important;
+        flex: 0 0 32px !important;
+        width: 32px !important;
+        justify-content: center !important;
+    }
+
+    /* Quitar bordes y fondos de los botones de decrementar e incrementar en móvil */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #ffffff !important;
+        font-size: 16px !important;
+        width: 32px !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        text-shadow: none !important;
+    }
+
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button:hover,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button:active {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-radius: 4px !important;
+    }
+
+    /* Estilo del visualizador de cantidad integrado en móvil */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) .qty-display-premium {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #ffff00 !important;
+        font-size: 15px !important;
+        font-weight: bold !important;
+        padding: 0 !important;
+        height: 32px !important;
+        min-height: 32px !important;
+        justify-content: flex-start !important; /* Alinear a la izquierda */
+        text-shadow: 0 0 4px rgba(255, 255, 0, 0.4) !important;
     }
 }
