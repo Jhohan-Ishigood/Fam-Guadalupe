@@ -8,7 +8,49 @@ import json
 import base64
 import mimetypes
 import urllib.parse
+import urllib.request
+import urllib.error
 import time
+
+# =========================================================
+# CONFIGURACIÓN DE FIREBASE (PERSISTENCIA EN LA NUBE)
+# =========================================================
+FIREBASE_URL = None
+if "FIREBASE_URL" in os.environ:
+    FIREBASE_URL = os.environ["FIREBASE_URL"]
+elif "FIREBASE_URL" in st.secrets:
+    FIREBASE_URL = st.secrets["FIREBASE_URL"]
+
+def firebase_read(path):
+    if not FIREBASE_URL:
+        return None
+    try:
+        url = f"{FIREBASE_URL.rstrip('/')}/{path}.json"
+        req = urllib.request.Request(url, method="GET")
+        with urllib.request.urlopen(req, timeout=5) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as e:
+        print(f"Error de lectura en Firebase ({path}): {e}")
+        return None
+
+def firebase_write(path, datos):
+    if not FIREBASE_URL:
+        return False
+    try:
+        url = f"{FIREBASE_URL.rstrip('/')}/{path}.json"
+        cuerpo = json.dumps(datos, ensure_ascii=False).encode("utf-8")
+        req = urllib.request.Request(
+            url,
+            data=cuerpo,
+            headers={"Content-Type": "application/json"},
+            method="PUT"
+        )
+        with urllib.request.urlopen(req, timeout=5) as response:
+            return response.status == 200
+    except Exception as e:
+        print(f"Error de escritura en Firebase ({path}): {e}")
+        return False
+
 
 # =========================================================
 # CONFIGURACIÓN GLOBAL
@@ -83,7 +125,18 @@ def guardar_json(ruta, datos):
                 os.remove(ruta_tmp)
             except:
                 pass
-        raise e
+        print(f"Error escribiendo copia física local: {e}")
+
+    # Guardar en la nube (Firebase) si está disponible
+    if FIREBASE_URL:
+        nombre_ruta = "menu_config" if ruta == RUTA_MENU else "categorias_config"
+        firebase_write(nombre_ruta, datos)
+    
+    # Invalidar caché inteligente de Streamlit inmediatamente para sincronizar en tiempo real
+    try:
+        cargar_datos_frescos.clear()
+    except:
+        pass
 
 
 def cargar_menu():
@@ -114,7 +167,13 @@ def cargar_menu():
         }
     }
     menu = None
-    if os.path.exists(RUTA_MENU):
+    
+    # 1. Intentar cargar desde Firebase Cloud
+    if FIREBASE_URL:
+        menu = firebase_read("menu_config")
+
+    # 2. Respaldo local si Firebase no está activo o falló la conexión
+    if menu is None and os.path.exists(RUTA_MENU):
         try:
             with open(RUTA_MENU, "r", encoding="utf-8") as archivo:
                 menu = json.load(archivo)
@@ -163,7 +222,13 @@ def cargar_categorias():
         "🛠️ Ferretería": ["Todos", "Herramientas", "Pinturas"]
     }
     datos = None
-    if os.path.exists(RUTA_CATEGORIAS):
+    
+    # 1. Intentar cargar desde Firebase Cloud
+    if FIREBASE_URL:
+        datos = firebase_read("categorias_config")
+
+    # 2. Respaldo local si Firebase no está activo o falló la conexión
+    if datos is None and os.path.exists(RUTA_CATEGORIAS):
         try:
             with open(RUTA_CATEGORIAS, "r", encoding="utf-8") as archivo:
                 datos = json.load(archivo)
@@ -190,6 +255,7 @@ def cargar_categorias():
         if not datos_nuevos:
             return categorias_default
         return datos_nuevos
+
 
 
 UNIDADES_VENTA = {
@@ -274,6 +340,73 @@ def registrar_cambio_cantidad(producto, key_qty):
         st.session_state.producto_animado = producto
         st.session_state.momento_animacion = time.time()
     actualizar_carrito_desde_selecciones()
+
+
+# =========================================================
+# CALLBACKS NATIVOS DE OPTIMIZACIÓN (ANTI-FLICKER)
+# =========================================================
+
+def cambiar_pantalla(nombre_pantalla):
+    st.session_state.pantalla = nombre_pantalla
+
+def cambiar_subcategoria(subcat):
+    st.session_state.categoria_activa = subcat
+
+def entrar_categoria(cat):
+    st.session_state.categoria_principal_activa = cat
+    st.session_state.categoria_activa = "Todos"
+    st.session_state.pantalla = "catalogo"
+
+def cambiar_seccion_rapido():
+    st.session_state.categoria_principal_activa = st.session_state.cat_rapida_selector
+    st.session_state.categoria_activa = "Todos"
+
+def añadir_producto(producto, paso):
+    qty_key = f"qty_val_{producto}"
+    st.session_state[qty_key] = paso
+    st.session_state.selecciones_pedido[producto] = paso
+    st.session_state.producto_animado = producto
+    st.session_state.momento_animacion = time.time()
+    actualizar_carrito_desde_selecciones()
+
+def decrementar_producto(producto, paso):
+    qty_key = f"qty_val_{producto}"
+    nueva_qty = max(0.0, st.session_state.get(qty_key, 0.0) - paso)
+    st.session_state[qty_key] = nueva_qty
+    if nueva_qty > 0:
+        st.session_state.selecciones_pedido[producto] = nueva_qty
+    else:
+        st.session_state.selecciones_pedido.pop(producto, None)
+    actualizar_carrito_desde_selecciones()
+
+def incrementar_producto(producto, paso, stock):
+    qty_key = f"qty_val_{producto}"
+    nueva_qty = min(stock, st.session_state.get(qty_key, 0.0) + paso)
+    st.session_state[qty_key] = nueva_qty
+    st.session_state.selecciones_pedido[producto] = nueva_qty
+    st.session_state.producto_animado = producto
+    st.session_state.momento_animacion = time.time()
+    actualizar_carrito_desde_selecciones()
+
+def simular_monto_final():
+    actualizar_carrito_desde_selecciones()
+    if st.session_state.total > 0:
+        st.session_state.bloqueo_stock = False
+        st.session_state.pantalla = "carrito"
+        st.session_state.warning_carrito_vacio = False
+    else:
+        st.session_state.warning_carrito_vacio = True
+
+def logout_admin():
+    st.session_state.es_admin_autenticado = False
+    st.session_state.pantalla = "bienvenida"
+
+def nueva_orden():
+    st.session_state.carrito       = []
+    st.session_state.selecciones_pedido = {}
+    st.session_state.total         = 0.0
+    st.session_state.pantalla      = "bienvenida"
+    st.session_state.bloqueo_stock = False
 
 
 def render_datos_pago(titulo="DATOS DE PAGO", compacto=False, desplegable=False):
@@ -380,29 +513,29 @@ def generar_proforma_html(carrito, total, fecha):
 <title>Proforma - Familia Guadalupe</title>
 <style>
   body {{ font-family: Arial, sans-serif; background: #0a0a0f; color: #fff; padding: 40px; }}
-  .logo {{ text-align: center; color: #d4af37; font-size: 28px; font-weight: 900; margin-bottom: 5px; }}
+  .logo {{ text-align: center; color: #ffff00; font-size: 28px; font-weight: 900; margin-bottom: 5px; }}
   .subtitulo {{ text-align: center; color: #aaa; font-size: 14px; margin-bottom: 30px; }}
   table {{ width: 100%; border-collapse: collapse; }}
-  th {{ background: #d4af37; color: #000; padding: 12px; text-align: left; }}
-  tr:hover td {{ background: rgba(212,175,55,0.05); }}
-  .total-row td {{ font-size: 22px; font-weight: 900; color: #2ecc71; padding: 16px 10px; border-top: 2px solid #d4af37; }}
+  th {{ background: #ffff00; color: #000; padding: 12px; text-align: left; }}
+  tr:hover td {{ background: rgba(255,255,0,0.05); }}
+  .total-row td {{ font-size: 22px; font-weight: 900; color: #2ecc71; padding: 16px 10px; border-top: 2px solid #ffff00; }}
   .footer {{ text-align: center; margin-top: 40px; color: #888; font-size: 12px; }}
-  .advertencia {{ background: rgba(212,175,55,0.1); border: 1px solid #d4af37; border-radius: 8px;
-                  padding: 12px 16px; margin-top: 25px; color: #d4af37; font-weight: bold; text-align: center; }}
+  .advertencia {{ background: rgba(255,255,0,0.1); border: 1px solid #ffff00; border-radius: 8px;
+                  padding: 12px 16px; margin-top: 25px; color: #ffff00; font-weight: bold; text-align: center; }}
   @media print {{
     .no-print {{ display: none !important; }}
     body {{ background: #fff !important; color: #000 !important; padding: 20px !important; }}
-    th {{ background: #d4af37 !important; color: #000 !important; }}
+    th {{ background: #ffff00 !important; color: #000 !important; }}
     tr td {{ border-bottom: 1px solid #ddd !important; color: #000 !important; }}
-    .total-row td {{ font-size: 22px; font-weight: 900; color: #27ae60 !important; padding: 16px 10px; border-top: 2px solid #d4af37 !important; }}
-    .advertencia {{ background: #fdfaf2 !important; border: 1px solid #d4af37 !important; color: #d4af37 !important; }}
+    .total-row td {{ font-size: 22px; font-weight: 900; color: #27ae60 !important; padding: 16px 10px; border-top: 2px solid #ffff00 !important; }}
+    .advertencia {{ background: #161a0e !important; border: 1px solid #ffff00 !important; color: #ffff00 !important; }}
     .footer {{ color: #555 !important; }}
   }}
 </style>
 </head>
 <body>
 <div class="no-print" style="text-align: center; margin-bottom: 30px;">
-  <button onclick="window.print()" style="background: #d4af37; color: #000; font-weight: 900; padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 4px 15px rgba(212,175,55,0.4); font-family: sans-serif; transition: transform 0.2s;">
+  <button onclick="window.print()" style="background: #ffff00; color: #000; font-weight: 900; padding: 14px 28px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0 4px 15px rgba(255,255,0,0.4); font-family: sans-serif; transition: transform 0.2s;">
     🖨️ IMPRIMIR / GUARDAR COMO PDF
   </button>
 </div>
@@ -422,10 +555,17 @@ def generar_proforma_html(carrito, total, fecha):
 # SESSION STATE
 # =========================================================
 
-if "menu_dinamico"          not in st.session_state:
-    st.session_state.menu_dinamico      = cargar_menu()
-if "lista_categorias"       not in st.session_state:
-    st.session_state.lista_categorias   = cargar_categorias()
+# =========================================================
+# CACHÉ INTELIGENTE Y PERSISTENCIA EN TIEMPO REAL (TTL = 2 SEGUNDOS)
+# =========================================================
+@st.cache_data(ttl=2, show_spinner=False)
+def cargar_datos_frescos():
+    return cargar_menu(), cargar_categorias()
+
+menu_fresco, categorias_frescas = cargar_datos_frescos()
+st.session_state.menu_dinamico = menu_fresco
+st.session_state.lista_categorias = categorias_frescas
+
 if "pantalla"               not in st.session_state:
     st.session_state.pantalla           = "bienvenida"
 if "categoria_principal_activa" not in st.session_state:
@@ -468,9 +608,9 @@ URL_LOGO  = convertir_base64(os.path.join(BASE_DIR, "Logotipo.png"))
 URL_QR    = convertir_base64(os.path.join(BASE_DIR, "miqr1.png"))
 
 # URLs de video — usando static local si está disponible o Cloudinary de respaldo
-URL_VIDEO_PC    = "/static/videofondopc.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondopc.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
-URL_VIDEO_MOVIL = "/static/videofondocelular.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondocelular.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
-URL_VIDEO_LOGO  = "/static/logovideo.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "logovideo.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
+URL_VIDEO_PC    = "/app/static/videofondopc.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondopc.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
+URL_VIDEO_MOVIL = "/app/static/videofondocelular.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "videofondocelular.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
+URL_VIDEO_LOGO  = "/app/static/logovideo.mp4" if os.path.exists(os.path.join(BASE_DIR, "static", "logovideo.mp4")) else "https://res.cloudinary.com/demo/video/upload/sample.mp4"
 
 # =========================================================
 # CSS MAESTRO — Solo variables Python aquí, resto en style.css externo
@@ -543,7 +683,7 @@ div[role="radiogroup"] {{
 
 # Decide qué mostrar en el logo flotante: video si existe URL, imagen si no
 logo_flotante_html = f'<img src="{URL_LOGO}" class="mini-logo-imagen-circular" alt="Logo Guadalupe">' \
-    if URL_LOGO else '<span style="color:#d4af37;font-size:28px;">🏪</span>'
+    if URL_LOGO else '<span style="color:#ffff00;font-size:28px;">🏪</span>'
 
 st.markdown(f'''
 
@@ -703,18 +843,12 @@ with st.sidebar:
     st.markdown("### 🏪 Familia Guadalupe")
     st.markdown("---")
 
-    if st.button("🏠 Inicio", use_container_width=True, key="nav_inicio"):
-        st.session_state.pantalla = "bienvenida"
-        st.rerun()
+    st.button("🏠 Inicio", use_container_width=True, key="nav_inicio", on_click=cambiar_pantalla, args=("bienvenida",))
 
-    if st.button("🛍️ Catálogo", use_container_width=True, key="nav_catalogo"):
-        st.session_state.pantalla = "seleccion_categorias"
-        st.rerun()
+    st.button("🛍️ Catálogo", use_container_width=True, key="nav_catalogo", on_click=cambiar_pantalla, args=("seleccion_categorias",))
 
     if st.session_state.carrito:
-        if st.button(f"🛒 Carrito ({len(st.session_state.carrito)})", use_container_width=True, key="nav_carrito"):
-            st.session_state.pantalla = "carrito"
-            st.rerun()
+        st.button(f"🛒 Carrito ({len(st.session_state.carrito)})", use_container_width=True, key="nav_carrito", on_click=cambiar_pantalla, args=("carrito",))
 
     st.markdown("---")
     st.markdown("#### 🔐 Panel Admin")
@@ -730,13 +864,8 @@ with st.sidebar:
                 st.error("Clave incorrecta")
     else:
         st.success("✔ Admin activo")
-        if st.button("⚙️ Panel Admin", use_container_width=True, key="btn_ir_admin"):
-            st.session_state.pantalla = "admin"
-            st.rerun()
-        if st.button("🚪 Cerrar sesión", use_container_width=True, key="btn_logout"):
-            st.session_state.es_admin_autenticado = False
-            st.session_state.pantalla = "bienvenida"
-            st.rerun()
+        st.button("⚙️ Panel Admin", use_container_width=True, key="btn_ir_admin", on_click=cambiar_pantalla, args=("admin",))
+        st.button("🚪 Cerrar sesión", use_container_width=True, key="btn_logout", on_click=logout_admin)
 
     st.markdown("---")
     st.markdown(f"<p style='color:#888;font-size:11px;text-align:center;'>📅 {fecha_actual}</p>", unsafe_allow_html=True)
@@ -753,8 +882,8 @@ if st.session_state.pantalla == "bienvenida":
     # Títulos principales
     st.markdown("<h1 class='titulo-principal'>FAMILIA GUADALUPE</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<p style='text-align:center;color:#d4af37;font-size:22px;font-weight:bold;"
-        "text-shadow:0 0 15px rgba(212,175,55,0.6);margin-bottom:0;'>"
+        "<p style='text-align:center;color:#ffff00;font-size:22px;font-weight:bold;"
+        "text-shadow:0 0 15px rgba(255,255,0,0.6);margin-bottom:0;'>"
         "CATÁLOGO PREMIUM DE PRODUCTOS 🔥</p>",
         unsafe_allow_html=True
     )
@@ -783,8 +912,8 @@ if st.session_state.pantalla == "bienvenida":
         height: 206px;
         border-radius: 50%;
         overflow: hidden;
-        border: 3px solid #d4af37;
-        box-shadow: 0 0 25px rgba(212,175,55,.7), 0 0 60px rgba(212,175,55,.4);
+        border: 3px solid #ffff00;
+        box-shadow: 0 0 25px rgba(255,255,0,.7), 0 0 60px rgba(255,255,0,.4);
         animation: flotarEscudo 4s ease-in-out infinite;
     }}
     @keyframes flotarEscudo {{
@@ -800,11 +929,11 @@ if st.session_state.pantalla == "bienvenida":
         height: 160%;
         background: linear-gradient(120deg, transparent, rgba(255,255,255,.85), transparent);
         transform: rotate(20deg);
-        animation: destelloOro 4s infinite;
+        animation: destelloNeon 4s infinite;
         z-index: 10;
         pointer-events: none;
     }}
-    @keyframes destelloOro {{
+    @keyframes destelloNeon {{
         0%  {{ left: -150%; }}
         20% {{ left: 150%;  }}
         100%{{ left: 150%;  }}
@@ -813,10 +942,7 @@ if st.session_state.pantalla == "bienvenida":
     ''', unsafe_allow_html=True)
 
     # ── BOTÓN PRINCIPAL CON ESCÁNER DE LUZ ──
-    st.markdown("<br>", unsafe_allow_html=True)
-    if st.button("🛍️ EMPEZAR A NAVEGAR EN LOS PRODUCTOS DISPONIBLES", use_container_width=True, key="btn_navegar"):
-        st.session_state.pantalla = "seleccion_categorias"
-        st.rerun()
+    st.button("🛍️ EMPEZAR A NAVEGAR EN LOS PRODUCTOS DISPONIBLES", use_container_width=True, key="btn_navegar", on_click=cambiar_pantalla, args=("seleccion_categorias",))
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -904,16 +1030,10 @@ elif st.session_state.pantalla == "seleccion_categorias":
                 </div>
                 ''', unsafe_allow_html=True)
                 
-                if st.button("Entrar", use_container_width=True, key=f"cat_btn_{cat}"):
-                    st.session_state.categoria_principal_activa = cat
-                    st.session_state.categoria_activa = "Todos"
-                    st.session_state.pantalla = "catalogo"
-                    st.rerun()
+                st.button("Entrar", use_container_width=True, key=f"cat_btn_{cat}", on_click=entrar_categoria, args=(cat,))
 
     st.markdown("<br><br>", unsafe_allow_html=True)
-    if st.button("⬅ Volver al inicio", use_container_width=True, key="btn_volver_bienvenida"):
-        st.session_state.pantalla = "bienvenida"
-        st.rerun()
+    st.button("⬅ Volver al inicio", use_container_width=True, key="btn_volver_bienvenida", on_click=cambiar_pantalla, args=("bienvenida",))
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1101,7 +1221,7 @@ elif st.session_state.pantalla == "carrito":
                 border-radius: 14px;
                 margin-bottom: 10px;
                 color: white;
-                border-left: 4px solid #d4af37;
+                border-left: 4px solid #ffff00;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -1125,13 +1245,13 @@ elif st.session_state.pantalla == "carrito":
         # ── NOTA ESTRATÉGICA DORADA ──
         st.markdown('''
         <div style="
-            background: rgba(212,175,55,0.12);
-            border: 1px solid #d4af37;
+            background: rgba(255,255,0,0.12);
+            border: 1px solid #ffff00;
             border-radius: 10px;
             padding: 14px 18px;
             margin: 18px 0;
             text-align: center;
-            color: #d4af37;
+            color: #ffff00;
             font-weight: 700;
             font-size: 15px;
         ">
@@ -1541,7 +1661,7 @@ if st.session_state.pantalla in ["seleccion_categorias", "catalogo"]:
 
 st.markdown('''
 <div class="social-footer">
-    <p style="color:#d4af37;font-weight:900;font-size:16px;margin:0;">
+    <p style="color:#ffff00;font-weight:900;font-size:16px;margin:0;">
         🏪 ALMACÉN FAMILIA GUADALUPE
     </p>
     <p style="color:#aaa;font-size:13px;margin:5px 0;">

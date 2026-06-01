@@ -93,32 +93,32 @@ div[role="radiogroup"] {
 
 .titulo-principal {
     text-align: center;
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     font-family: 'Arial Black', Gadget, sans-serif;
     font-size: 38px;
     margin-top: 0px !important;
     margin-bottom: 10px !important;
     padding-top: 0px !important;
     text-shadow:
-        0 0 4px  rgba(212,175,55,0.4),
-        0 0 10px rgba(212,175,55,0.6),
-        0 0 20px rgba(212,175,55,0.3) !important;
-    animation: pulsoBrilloOro 3s ease-in-out infinite alternate !important;
+        0 0 4px  rgba(204,255,0,0.4),
+        0 0 10px rgba(204,255,0,0.6),
+        0 0 20px rgba(204,255,0,0.3) !important;
+    animation: pulsoBrilloNeon 3s ease-in-out infinite alternate !important;
 }
 
-@keyframes pulsoBrilloOro {
+@keyframes pulsoBrilloNeon {
     0% {
         text-shadow:
-            0 0 4px  rgba(212,175,55,0.4),
-            0 0 10px rgba(212,175,55,0.5),
-            0 0 15px rgba(212,175,55,0.2);
+            0 0 4px  rgba(204,255,0,0.4),
+            0 0 10px rgba(204,255,0,0.5),
+            0 0 15px rgba(204,255,0,0.2);
         filter: brightness(1);
     }
     100% {
         text-shadow:
-            0 0 6px  rgba(212,175,55,0.6),
-            0 0 15px rgba(212,175,55,0.8),
-            0 0 25px rgba(212,175,55,0.4);
+            0 0 6px  rgba(204,255,0,0.6),
+            0 0 15px rgba(204,255,0,0.8),
+            0 0 25px rgba(204,255,0,0.4);
         filter: brightness(1.15);
     }
 }
@@ -148,7 +148,7 @@ div[data-testid="stHeader"] button[kind="headerNoPadding"] {
 
 button[kind="headerNoPadding"] {
     background-color: #111424 !important;
-    border: 1px solid #d4af37 !important;
+    border: 1px solid #ccff00 !important;
     border-radius: 6px !important;
     padding: 6px 14px !important;
     height: auto !important;
@@ -159,7 +159,7 @@ button[kind="headerNoPadding"] {
 button[kind="headerNoPadding"] svg { display: none !important; }
 button[kind="headerNoPadding"]::after {
     content: " Menú de Opciones" !important;
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     font-weight: bold !important;
     font-size: 14px !important;
     font-family: 'Segoe UI', sans-serif !important;
@@ -200,9 +200,9 @@ section[data-testid="stSidebar"] .element-container:has(h4) {
     background-color: #111424 !important;
     padding: 10px 14px !important;
     border-radius: 12px !important;
-    border-left: 4px solid #d4af37 !important;
+    border-left: 4px solid #ccff00 !important;
     margin-bottom: 6px !important;
-    box-shadow: 0 4px 15px rgba(212,175,55,0.15) !important;
+    box-shadow: 0 4px 15px rgba(204,255,0,0.15) !important;
 }
 
 section[data-testid="stSidebar"] h4,
@@ -228,7 +228,7 @@ section[data-testid="stSidebar"] hr {
     margin: 12px 0 !important;
     border: 0 !important;
     height: 1px !important;
-    background: linear-gradient(to right, transparent, rgba(212,175,55,0.4), transparent) !important;
+    background: linear-gradient(to right, transparent, rgba(204,255,0,0.4), transparent) !important;
 }
 
 /* ============================================================================
@@ -271,10 +271,10 @@ section[data-testid="stSidebar"] hr {
 
 /* Hilo de luz dorado neón en hover — spec del documento */
 .tarjeta-producto-individual:hover .product-card-bottom {
-    border-left:   1px solid #d4af37 !important;
-    border-right:  1px solid #d4af37 !important;
-    border-bottom: 1px solid #d4af37 !important;
-    box-shadow: 0 4px 15px rgba(212,175,55,0.3) !important;
+    border-left:   1px solid #ccff00 !important;
+    border-right:  1px solid #ccff00 !important;
+    border-bottom: 1px solid #ccff00 !important;
+    box-shadow: 0 4px 15px rgba(204,255,0,0.3) !important;
 }
 
 .product-title {
@@ -287,7 +287,7 @@ section[data-testid="stSidebar"] hr {
 .product-price {
     font-size: 20px !important;
     font-weight: 900 !important;
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     font-family: 'Impact', Charcoal, sans-serif !important;
     white-space: nowrap !important;
 }
@@ -332,7 +332,7 @@ div[data-testid="stNumberInput"] input {
     font-size: 20px !important;
     font-weight: 900 !important;
     text-shadow: 0 0 8px rgba(46,204,113,0.5) !important;
-    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    border: 1px solid rgba(204, 255, 0, 0.2) !important;
     transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.2s ease !important;
 }
 
@@ -355,8 +355,8 @@ div[data-testid="stTextInput"]:has(input[key*="search_bar_"]) input {
     font-size: 14px !important;
 }
 div[data-testid="stTextInput"]:has(input[key*="search_bar_"]) input:focus {
-    border-color: #d4af37 !important;
-    box-shadow: 0 0 8px rgba(212,175,55,0.5) !important;
+    border-color: #ccff00 !important;
+    box-shadow: 0 0 8px rgba(204,255,0,0.5) !important;
 }
 
 /* ============================================================================
@@ -400,7 +400,7 @@ div[data-testid="stExpander"] summary {
 }
 div[data-testid="stExpander"] summary:hover {
     background-color: #1e233d !important;
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     cursor: pointer !important;
 }
 
@@ -434,13 +434,13 @@ div[data-testid="stMainBlockContainer"] div.stButton > button,
 section[data-testid="stSidebar"] div.stButton > button {
     position: relative !important;
     overflow: hidden !important;
-    background: linear-gradient(135deg, #d4af37 0%, #aa8416 100%) !important;
+    background: linear-gradient(135deg, #ccff00 0%, #8cbe00 100%) !important;
     color: #0a0a0f !important;
     font-weight: 900 !important;
     font-family: 'Arial Black', Gadget, sans-serif !important;
-    border: 1px solid #f1c40f !important;
+    border: 1px solid #ccff00 !important;
     text-transform: uppercase !important;
-    box-shadow: 0 4px 12px rgba(212,175,55,0.35) !important;
+    box-shadow: 0 4px 12px rgba(204,255,0,0.35) !important;
     transition: filter 0.2s ease !important;
     border-radius: 10px !important;
 }
@@ -479,26 +479,26 @@ section[data-testid="stSidebar"] div.stButton > button:hover {
 
 /* Personalidad por función: los botones dejan de verse todos iguales */
 button.btn-guadalupe-inicio {
-    background: linear-gradient(135deg, #f7d766 0%, #d4af37 42%, #8f6710 100%) !important;
-    border: 1px solid #fff0a6 !important;
+    background: linear-gradient(135deg, #d9ff66 0%, #ccff00 42%, #6e9600 100%) !important;
+    border: 1px solid #f2ffcc !important;
     color: #080706 !important;
-    box-shadow: 0 0 24px rgba(212,175,55,0.58), inset 0 1px 0 rgba(255,255,255,0.42) !important;
+    box-shadow: 0 0 24px rgba(204,255,0,0.58), inset 0 1px 0 rgba(255,255,255,0.42) !important;
     letter-spacing: 0.2px !important;
 }
 
 button.btn-guadalupe-categoria {
     background: linear-gradient(135deg, #17213a 0%, #101424 56%, #090b12 100%) !important;
-    border: 1px solid rgba(212,175,55,0.78) !important;
-    border-bottom: 3px solid #d4af37 !important;
-    color: #f7d766 !important;
-    box-shadow: 0 8px 18px rgba(0,0,0,0.38), 0 0 14px rgba(212,175,55,0.28) !important;
+    border: 1px solid rgba(204,255,0,0.78) !important;
+    border-bottom: 3px solid #ccff00 !important;
+    color: #d9ff66 !important;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.38), 0 0 14px rgba(204,255,0,0.28) !important;
 }
 
 button.btn-guadalupe-subcategoria {
     background: linear-gradient(135deg, rgba(16,20,36,0.95), rgba(41,34,11,0.95)) !important;
-    border: 1px solid rgba(247,215,102,0.72) !important;
-    color: #ffe890 !important;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 13px rgba(212,175,55,0.22) !important;
+    border: 1px solid rgba(204,255,0,0.72) !important;
+    color: #e6ff99 !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 13px rgba(204,255,0,0.22) !important;
 }
 
 button.btn-guadalupe-volver {
@@ -577,7 +577,7 @@ div[data-testid="stMetricValue"] div {
 div.stAlert {
     background-color: #0b111e !important;
     border: 1px solid #1a2436 !important;
-    border-left: 5px solid #d4af37 !important;
+    border-left: 5px solid #ccff00 !important;
     border-radius: 10px !important;
     box-shadow: 0 6px 20px rgba(0,0,0,0.6) !important;
 }
@@ -648,8 +648,8 @@ div[data-testid="stTextInput"]:not(:has(input[key*="search_bar_"])) input {
     height: 100% !important;
     object-fit: cover !important;
     border-radius: 50% !important;
-    border: 2px solid #d4af37 !important;
-    box-shadow: 0 0 15px rgba(212,175,55,0.6) !important;
+    border: 2px solid #ccff00 !important;
+    box-shadow: 0 0 15px rgba(204,255,0,0.6) !important;
     transform-style: preserve-3d !important;
     animation: rotarMiniLogo3D 4s linear infinite !important;
 }
@@ -673,7 +673,7 @@ div[data-testid="stTextInput"]:not(:has(input[key*="search_bar_"])) input {
     max-width: 600px !important;
 }
 .social-footer a {
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     font-weight: 800 !important;
     text-decoration: none !important;
 }
@@ -833,7 +833,7 @@ div[data-testid="stTextInput"]:not(:has(input[key*="search_bar_"])) input {
     padding: 24px 16px !important;
     border-radius: 12px !important;
     border: 1px solid #222538 !important;
-    border-bottom: 4px solid #d4af37 !important;
+    border-bottom: 4px solid #ccff00 !important;
     text-align: center !important;
     cursor: pointer !important;
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease, border-color 0.3s ease !important;
@@ -847,8 +847,8 @@ div[data-testid="stTextInput"]:not(:has(input[key*="search_bar_"])) input {
 
 .tarjeta-categoria-principal:hover {
     transform: translateY(-5px) scale(1.03) !important;
-    border-color: #d4af37 !important;
-    box-shadow: 0 4px 20px rgba(212,175,55,0.3) !important;
+    border-color: #ccff00 !important;
+    box-shadow: 0 4px 20px rgba(204,255,0,0.3) !important;
 }
 
 .categoria-icono {
@@ -899,7 +899,7 @@ div[data-testid="stTextInput"]:not(:has(input[key*="search_bar_"])) input {
     z-index: -1 !important; /* Colocado justo detrás de Streamlit y delante del video */
     pointer-events: none !important;
     background:
-        radial-gradient(circle at 50% 15%, rgba(212,175,55,0.12), transparent 28%),
+        radial-gradient(circle at 50% 15%, rgba(204,255,0,0.12), transparent 28%),
         linear-gradient(180deg, rgba(0,0,0,0.60), rgba(0,0,0,0.78)) !important;
 }
 
@@ -942,8 +942,8 @@ section[data-testid="stSidebar"] {
 .tarjeta-producto-individual {
     position: relative !important;
     overflow: hidden !important;
-    border: 1px solid rgba(212,175,55,0.28) !important;
-    border-bottom: 3px solid rgba(212,175,55,0.72) !important;
+    border: 1px solid rgba(204,255,0,0.28) !important;
+    border-bottom: 3px solid rgba(204,255,0,0.72) !important;
     box-shadow:
         0 8px 24px rgba(0,0,0,0.55),
         inset 0 0 0 1px rgba(255,255,255,0.04) !important;
@@ -962,7 +962,7 @@ section[data-testid="stSidebar"] {
     right: 0 !important;
     bottom: 0 !important;
     height: 3px !important;
-    background: linear-gradient(90deg, transparent, #f7d766, transparent) !important;
+    background: linear-gradient(90deg, transparent, #d9ff66, transparent) !important;
     opacity: 0 !important;
     transition: opacity 0.25s ease !important;
 }
@@ -1013,7 +1013,7 @@ section[data-testid="stSidebar"] {
 
 @keyframes productoSeleccionadoPop {
     0%   { transform: scale(1); box-shadow: 0 8px 24px rgba(0,0,0,0.55); }
-    35%  { transform: scale(1.035); box-shadow: 0 0 28px rgba(46,204,113,0.48), 0 0 22px rgba(212,175,55,0.35); }
+    35%  { transform: scale(1.035); box-shadow: 0 0 28px rgba(46,204,113,0.48), 0 0 22px rgba(204,255,0,0.35); }
     100% { transform: scale(1); box-shadow: 0 8px 24px rgba(0,0,0,0.55); }
 }
 
@@ -1031,11 +1031,11 @@ section[data-testid="stSidebar"] {
 
 .titulo-datos-pago h2,
 .datos-pago-bloque h2 {
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     font-size: 22px !important;
     margin: 0 !important;
     font-family: 'Arial Black', Gadget, sans-serif !important;
-    text-shadow: 0 0 14px rgba(212,175,55,0.45) !important;
+    text-shadow: 0 0 14px rgba(204,255,0,0.45) !important;
 }
 
 .titulo-datos-pago p {
@@ -1078,7 +1078,7 @@ section[data-testid="stSidebar"] {
 
 .yape-qr-box strong {
     font-size: 16px !important;
-    color: #d4af37 !important;
+    color: #ccff00 !important;
 }
 
 .yape-qr-box span {
@@ -1089,7 +1089,7 @@ section[data-testid="stSidebar"] {
 .datos-pago-bloque {
     margin: 22px 0 !important;
     padding: 18px !important;
-    border: 1px solid rgba(212,175,55,0.45) !important;
+    border: 1px solid rgba(204,255,0,0.45) !important;
     border-radius: 12px !important;
     background: rgba(5,6,12,0.62) !important;
     backdrop-filter: blur(12px) !important;
@@ -1122,7 +1122,7 @@ section[data-testid="stSidebar"] {
 }
 
 .dato-pago-card span {
-    color: #d4af37 !important;
+    color: #ccff00 !important;
     font-size: 12px !important;
     font-weight: 900 !important;
     text-transform: uppercase !important;
@@ -1227,7 +1227,7 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
     background-color: rgba(11, 12, 20, 0.85) !important;
     backdrop-filter: blur(8px) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(212, 175, 55, 0.25) !important;
+    border: 1px solid rgba(204, 255, 0, 0.25) !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
     box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
@@ -1236,8 +1236,8 @@ div[data-testid="stSelectbox"] div[data-baseweb="select"] {
 
 div[data-testid="stTextInput"] input:focus,
 div[data-testid="stSelectbox"] div[data-baseweb="select"]:focus-within {
-    border-color: #d4af37 !important;
-    box-shadow: 0 0 14px rgba(212, 175, 55, 0.35) !important;
+    border-color: #ccff00 !important;
+    box-shadow: 0 0 14px rgba(204, 255, 0, 0.35) !important;
 }
 
 /* PESTAÑAS SUBCATEGORÍAS ESTILO NETFLIX */
@@ -1265,11 +1265,11 @@ button.btn-guadalupe-subcategoria:hover {
 
 /* Subcategoría activa (Glow dorado de acento) */
 button.btn-subcategoria-activa {
-    background: rgba(212, 175, 55, 0.15) !important;
-    color: #d4af37 !important;
-    border: 1px solid #d4af37 !important;
-    box-shadow: 0 0 12px rgba(212, 175, 55, 0.3) !important;
-    text-shadow: 0 0 6px rgba(212, 175, 55, 0.4) !important;
+    background: rgba(204, 255, 0, 0.15) !important;
+    color: #ccff00 !important;
+    border: 1px solid #ccff00 !important;
+    box-shadow: 0 0 12px rgba(204, 255, 0, 0.3) !important;
+    text-shadow: 0 0 6px rgba(204, 255, 0, 0.4) !important;
 }
 
 div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) > [data-testid="column"] > div,
@@ -1381,9 +1381,9 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         overflow: auto !important;
         
         transform-origin: top left !important;
-        border-right: 2px solid #d4af37 !important; /* Borde dorado de división */
+        border-right: 2px solid #ccff00 !important; /* Borde dorado de división */
         border-left: none !important;
-        box-shadow: 12px 0 34px rgba(0,0,0,0.62), 1px 0 0 rgba(212,175,55,0.45) !important;
+        box-shadow: 12px 0 34px rgba(0,0,0,0.62), 1px 0 0 rgba(204,255,0,0.45) !important;
     }
 
     /* Línea indicadora visual de arrastre/resize */
@@ -1394,13 +1394,13 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         right: 0 !important;
         width: 4px !important;
         height: 100% !important;
-        background: rgba(212,175,55,0.2) !important;
+        background: rgba(204,255,0,0.2) !important;
         cursor: ew-resize !important;
         pointer-events: none !important;
         transition: background 0.2s ease !important;
     }
     section[data-testid="stSidebar"]:hover::after {
-        background: rgba(212,175,55,0.6) !important;
+        background: rgba(204,255,0,0.6) !important;
     }
 
     section[data-testid="stSidebar"] > div,
@@ -1409,9 +1409,9 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         min-width: 100% !important;
         max-width: 100% !important;
         background:
-            radial-gradient(circle at top right, rgba(212,175,55,0.14), transparent 35%),
+            radial-gradient(circle at top right, rgba(204,255,0,0.14), transparent 35%),
             linear-gradient(180deg, rgba(9,11,20,0.98), rgba(4,5,10,0.98)) !important;
-        border-right: 1px solid rgba(212,175,55,0.45) !important;
+        border-right: 1px solid rgba(204,255,0,0.45) !important;
         border-left: none !important;
     }
 
@@ -1505,7 +1505,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         padding: 5px 4px !important;
         font-size: 10px !important;
         border-radius: 0 0 8px 8px !important;
-        box-shadow: 0 0 12px rgba(212,175,55,0.35) !important;
+        box-shadow: 0 0 12px rgba(204,255,0,0.35) !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -1543,7 +1543,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         height: 118px !important;
         border-radius: 8px 8px 0 0 !important;
         background:
-            radial-gradient(circle at center, rgba(212,175,55,0.12), transparent 42%),
+            radial-gradient(circle at center, rgba(204,255,0,0.12), transparent 42%),
             #111424 !important;
     }
 
@@ -1585,10 +1585,10 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         pointer-events: auto !important;
         min-height: 72px !important;
         border-radius: 16px 16px 0 0 !important;
-        border: 1px solid rgba(212,175,55,0.72) !important;
+        border: 1px solid rgba(204,255,0,0.72) !important;
         border-bottom: none !important;
         background: rgba(8,10,18,0.94) !important;
-        box-shadow: 0 -8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(212,175,55,0.22) !important;
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(204,255,0,0.22) !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
@@ -1608,7 +1608,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
     }
 
     .pedido-sheet-handle strong {
-        color: #d4af37 !important;
+        color: #ccff00 !important;
         font-size: 14px !important;
         font-weight: 900 !important;
     }
@@ -1624,8 +1624,8 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         max-height: 0 !important;
         overflow-y: auto !important;
         background: rgba(8,10,18,0.96) !important;
-        border-left: 1px solid rgba(212,175,55,0.72) !important;
-        border-right: 1px solid rgba(212,175,55,0.72) !important;
+        border-left: 1px solid rgba(204,255,0,0.72) !important;
+        border-right: 1px solid rgba(204,255,0,0.72) !important;
         padding: 0 12px !important;
         transition: max-height 0.32s ease, padding 0.32s ease !important;
     }
