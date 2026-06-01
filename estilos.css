@@ -54,7 +54,7 @@ body {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    filter: brightness(0.48) contrast(1.05) !important;
+    filter: brightness(0.68) contrast(1.02) !important;
     opacity: 1 !important;
     background: #050509 !important;
 }
@@ -1817,7 +1817,8 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 }
 
 /* Píldora redondeada y scroll horizontal para subcategorías (PC y Móvil) */
-.grilla-netflix-subcategorias div[data-testid="stHorizontalBlock"] {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias,
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -1828,7 +1829,8 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
     padding: 8px 4px !important;
 }
 
-.grilla-netflix-subcategorias div[data-testid="stHorizontalBlock"] > [data-testid="column"] {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias > [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) > [data-testid="column"] {
     flex: 0 0 auto !important;
     width: auto !important;
     max-width: none !important;
@@ -1836,7 +1838,8 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
     display: block !important;
 }
 
-.grilla-netflix-subcategorias div[data-testid="stHorizontalBlock"] div.stButton > button {
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) div.stButton > button {
     min-height: 34px !important;
     height: 34px !important;
     font-size: 13px !important;
@@ -1845,14 +1848,16 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 }
 
 @media (max-width: 768px) {
-    .grilla-netflix-subcategorias div[data-testid="stHorizontalBlock"] div.stButton > button {
+    div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
+    div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) div.stButton > button {
         font-size: 11px !important;
         padding: 4px 12px !important;
     }
 }
 
 /* Asegurar que el selector de cantidad se mantenga horizontal en PC y móvil */
-.contenedor-qty-selector div[data-testid="stHorizontalBlock"] {
+div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -1862,18 +1867,22 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
     gap: 4px !important;
 }
 
-.contenedor-qty-selector div[data-testid="stHorizontalBlock"] > [data-testid="column"] {
+div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
     display: block !important;
     width: auto !important;
     max-width: none !important;
     min-width: 0 !important;
 }
 
-.contenedor-qty-selector div[data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-child(1),
-.contenedor-qty-selector div[data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-child(3) {
+div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
+div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
     flex: 0 0 42px !important; /* Ancho fijo para botones de más y menos */
 }
 
-.contenedor-qty-selector div[data-testid="stHorizontalBlock"] > [data-testid="column"]:nth-child(2) {
+div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
+div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important; /* La cantidad se expande en el medio */
 }

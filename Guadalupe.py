@@ -1122,7 +1122,6 @@ elif st.session_state.pantalla == "catalogo":
     if "Todos" not in subcategorias:
         subcategorias = ["Todos"] + subcategorias
         
-    st.markdown('<div class="grilla-netflix-subcategorias">', unsafe_allow_html=True)
     cols_tabs = st.columns(len(subcategorias))
     for i, subcat in enumerate(subcategorias):
         with cols_tabs[i]:
@@ -1134,7 +1133,6 @@ elif st.session_state.pantalla == "catalogo":
                 on_click=cambiar_subcategoria,
                 args=(subcat,)
             )
-    st.markdown('</div>', unsafe_allow_html=True)
 
     categoria_sel = st.session_state.categoria_activa
 
@@ -1208,7 +1206,6 @@ elif st.session_state.pantalla == "catalogo":
                     qty_key = f"qty_val_{producto}"
                     st.session_state[qty_key] = cantidad_guardada
 
-                    st.markdown('<div class="contenedor-qty-selector">', unsafe_allow_html=True)
                     col_dec, col_val, col_inc = st.columns([1, 2, 1])
                     with col_dec:
                         st.button(
@@ -1232,7 +1229,6 @@ elif st.session_state.pantalla == "catalogo":
                             on_click=incrementar_producto,
                             args=(producto, paso, stock)
                         )
-                    st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
 
