@@ -1827,6 +1827,7 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     width: 100% !important;
     gap: 8px !important;
     padding: 8px 4px !important;
+    justify-content: flex-start !important; /* Juntar los botones estrechamente sin huecos vacíos */
 }
 
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias > [data-testid="column"],
@@ -1836,6 +1837,7 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     min-width: auto !important;
     max-width: none !important;
     display: block !important;
+    margin: 0 !important;
 }
 
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
@@ -1877,7 +1879,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     display: block !important;
     width: auto !important;
     max-width: none !important;
-    min-width: 0 !important;
+    min-width: auto !important;
 }
 
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
@@ -1885,11 +1887,15 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-se
 div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
 div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
     flex: 0 0 32px !important; /* Ancho fijo ultra compacto para los botones - 32px cabe perfecto */
+    width: 32px !important;
+    min-width: 32px !important;
 }
 
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
 div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important; /* La cantidad se expande en el medio */
+    width: auto !important;
+    min-width: 0 !important;
 }
 
 /* Ajustes de tamaño compacto para los botones del selector en móvil */
@@ -1911,4 +1917,31 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     font-size: 14px !important;
     padding: 2px 4px !important;
     border-radius: 6px !important;
+}
+
+@media (max-width: 768px) {
+    /* Forzar diseño horizontal estricto en móviles y anular la regla de colapso vertical de Streamlit */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
+        width: auto !important;
+        min-width: auto !important;
+        max-width: none !important;
+        flex: 1 1 auto !important;
+    }
+    
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
+        flex: 0 0 32px !important;
+        width: 32px !important;
+        min-width: 32px !important;
+    }
+    
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
+        flex: 1 1 auto !important;
+        width: auto !important;
+        min-width: 0 !important;
+    }
 }
