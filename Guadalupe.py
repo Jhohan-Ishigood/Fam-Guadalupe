@@ -809,6 +809,27 @@ const observer = new MutationObserver((mutations) => {{
             horizontalBlock.classList.add('grilla-netflix-subcategorias');
         }}
     }});
+
+    // 7. Solución para cerrar selectbox al hacer clic en el trigger nuevamente en móvil
+    document.querySelectorAll('div[data-testid="stSelectbox"]').forEach(selectbox => {{
+        const trigger = selectbox.querySelector('div[role="combobox"], input');
+        if (!trigger || trigger.dataset.selectboxListenerAdded) return;
+        trigger.dataset.selectboxListenerAdded = "true";
+
+        const handler = (e) => {{
+            const popover = document.querySelector('div[data-baseweb="popover"]');
+            if (popover) {{
+                // Quitar foco para cerrar el desplegable
+                setTimeout(() => {{
+                    trigger.blur();
+                    // Simular clic en el body fuera del popover para cerrarlo
+                    document.body.click();
+                }}, 50);
+            }}
+        }};
+        trigger.addEventListener('click', handler);
+        trigger.addEventListener('touchstart', handler, {{passive: true}});
+    }});
 }});
 observer.observe(document.body, {{ childList: true, subtree: true }});
 

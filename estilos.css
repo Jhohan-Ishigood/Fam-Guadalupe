@@ -1833,8 +1833,8 @@ div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias > [data-testid
 div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) > [data-testid="column"] {
     flex: 0 0 auto !important;
     width: auto !important;
+    min-width: auto !important;
     max-width: none !important;
-    min-width: 0 !important;
     display: block !important;
 }
 
@@ -1845,6 +1845,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     font-size: 13px !important;
     padding: 4px 16px !important;
     border-radius: 20px !important;
+    width: max-content !important;
+    min-width: 0 !important;
 }
 
 @media (max-width: 768px) {
@@ -1852,6 +1854,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) div.stButton > button {
         font-size: 11px !important;
         padding: 4px 12px !important;
+        width: max-content !important;
+        min-width: 0 !important;
     }
 }
 
