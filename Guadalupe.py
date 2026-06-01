@@ -772,7 +772,7 @@ const observer = new MutationObserver((mutations) => {{
             button.classList.add('btn-guadalupe-inicio');
         }} else if (text === 'ENTRAR' || text.startsWith('ENTRAR ')) {{
             button.classList.add('btn-guadalupe-categoria');
-        }} else if (subcategoriasGuadalupe.has(textNormalizado)) {{
+        }} else if (subcategoriasGuadalupe.has(textNormalizado) || textNormalizado === 'TODOS') {{
             button.classList.add('btn-guadalupe-subcategoria');
             if (text.includes('✅')) {{
                 button.classList.add('btn-subcategoria-activa');
@@ -789,6 +789,15 @@ const observer = new MutationObserver((mutations) => {{
             button.classList.add('btn-guadalupe-admin');
         }} else if (text.includes('ELIMINAR') || text.includes('CERRAR SESIÓN') || text.includes('CERRAR SESION')) {{
             button.classList.add('btn-guadalupe-peligro');
+        }}
+    }});
+
+    // 6. Contenedor horizontal de subcategorías estilo Netflix
+    const subcatButtons = document.querySelectorAll('button.btn-guadalupe-subcategoria');
+    subcatButtons.forEach(button => {{
+        const horizontalBlock = button.closest('[data-testid="stHorizontalBlock"]');
+        if (horizontalBlock) {{
+            horizontalBlock.classList.add('grilla-netflix-subcategorias');
         }}
     }});
 }});
@@ -1049,9 +1058,7 @@ elif st.session_state.pantalla == "catalogo":
     # Botón Volver a las categorías en la parte superior
     col_back, col_title = st.columns([1, 4])
     with col_back:
-        if st.button("⬅ Categorías", use_container_width=True, key="btn_volver_seleccion"):
-            st.session_state.pantalla = "seleccion_categorias"
-            st.rerun()
+        st.button("⬅ Categorías", use_container_width=True, key="btn_volver_seleccion", on_click=cambiar_pantalla, args=("seleccion_categorias",))
     with col_title:
         st.markdown(f"<h1 class='titulo-principal' style='text-align:left;margin-top:0px !important;'>🛍️ {st.session_state.categoria_principal_activa}</h1>", unsafe_allow_html=True)
 
@@ -1062,16 +1069,13 @@ elif st.session_state.pantalla == "catalogo":
     else:
         idx_rapida = 0
         
-    cat_rapida_sel = st.selectbox(
+    st.selectbox(
         "📁 Cambiar de sección:",
         lista_cats_rapidas,
         index=idx_rapida,
-        key="cat_rapida_selector"
+        key="cat_rapida_selector",
+        on_change=cambiar_seccion_rapido
     )
-    if cat_rapida_sel != st.session_state.categoria_principal_activa:
-        st.session_state.categoria_principal_activa = cat_rapida_sel
-        st.session_state.categoria_activa = "Todos"
-        st.rerun()
 
     # ── BUSCADOR ──
     busqueda = st.text_input(
@@ -1090,13 +1094,13 @@ elif st.session_state.pantalla == "catalogo":
     for i, subcat in enumerate(subcategorias):
         with cols_tabs[i]:
             activo = "✅ " if subcat == st.session_state.categoria_activa else ""
-            if st.button(
+            st.button(
                 f"{activo}{subcat}",
                 use_container_width=True,
-                key=f"tabs_netflix_master_{i}"
-            ):
-                st.session_state.categoria_activa = subcat
-                st.rerun()
+                key=f"tabs_netflix_master_{i}",
+                on_click=cambiar_subcategoria,
+                args=(subcat,)
+            )
 
     categoria_sel = st.session_state.categoria_activa
 
@@ -1166,33 +1170,51 @@ elif st.session_state.pantalla == "catalogo":
                     </div>
                     ''', unsafe_allow_html=True)
 
-                    # Widget nativo fuera del bloque HTML
-                    st.number_input(
-                        f"Cantidad — {producto} ({unidad})",
-                        min_value=0.0,
-                        max_value=stock,
-                        value=float(st.session_state.get(key_qty, cantidad_guardada)),
-                        step=paso,
-                        format="%.2f" if paso < 1 else "%.0f",
-                        key=f"qty_{producto}",
-                        on_change=registrar_cambio_cantidad,
-                        args=(producto, key_qty),
-                        label_visibility="collapsed"
-                    )
+                    # Selector de cantidad Premium y fácil de usar (táctil y rápido)
+                    qty_key = f"qty_val_{producto}"
+                    st.session_state[qty_key] = cantidad_guardada
+
+                    if st.session_state[qty_key] <= 0:
+                        st.button(
+                            "🛒 AÑADIR",
+                            key=f"btn_add_{producto}",
+                            use_container_width=True,
+                            on_click=añadir_producto,
+                            args=(producto, paso)
+                        )
+                    else:
+                        col_dec, col_val, col_inc = st.columns([1, 2, 1])
+                        with col_dec:
+                            st.button(
+                                "➖",
+                                key=f"btn_dec_{producto}",
+                                use_container_width=True,
+                                on_click=decrementar_producto,
+                                args=(producto, paso)
+                            )
+                        with col_val:
+                            cant_formateada = formatear_cantidad(st.session_state[qty_key])
+                            st.markdown(
+                                f'<div class="qty-display-premium">{cant_formateada} <small>{unidad}</small></div>',
+                                unsafe_allow_html=True
+                            )
+                        with col_inc:
+                            st.button(
+                                "➕",
+                                key=f"btn_inc_{producto}",
+                                use_container_width=True,
+                                on_click=incrementar_producto,
+                                args=(producto, paso, stock)
+                            )
 
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("🛒 SIMULAR MONTO FINAL", use_container_width=True, key="btn_simular"):
-        actualizar_carrito_desde_selecciones()
-
-        if st.session_state.total > 0:
-            st.session_state.bloqueo_stock = False
-            st.session_state.pantalla = "carrito"
-            st.rerun()
-        else:
-            st.warning("Agrega al menos un producto antes de continuar.")
+    st.button("🛒 SIMULAR MONTO FINAL", use_container_width=True, key="btn_simular", on_click=simular_monto_final)
+    if st.session_state.get("warning_carrito_vacio", False):
+        st.warning("Agrega al menos un producto antes de continuar.")
+        st.session_state.warning_carrito_vacio = False # Consumir el estado
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1207,9 +1229,7 @@ elif st.session_state.pantalla == "carrito":
 
     if not st.session_state.carrito:
         st.warning("Tu carrito está vacío.")
-        if st.button("← Volver al catálogo", use_container_width=True):
-            st.session_state.pantalla = "catalogo"
-            st.rerun()
+        st.button("← Volver al catálogo", use_container_width=True, key="btn_volver_catalogo_vacio", on_click=cambiar_pantalla, args=("catalogo",))
     else:
         # ── ITEMS DEL CARRITO ──
         for item in st.session_state.carrito:
@@ -1369,13 +1389,7 @@ elif st.session_state.pantalla == "carrito":
 
         st.markdown("<br>", unsafe_allow_html=True)
 
-        if st.button("🔄 NUEVA ORDEN", use_container_width=True, key="btn_nueva_orden"):
-            st.session_state.carrito       = []
-            st.session_state.selecciones_pedido = {}
-            st.session_state.total         = 0.0
-            st.session_state.pantalla      = "bienvenida"
-            st.session_state.bloqueo_stock = False
-            st.rerun()
+        st.button("🔄 NUEVA ORDEN", use_container_width=True, key="btn_nueva_orden", on_click=nueva_orden)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
