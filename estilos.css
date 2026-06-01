@@ -1818,7 +1818,8 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 
 /* Píldora redondeada y scroll horizontal para subcategorías (PC y Móvil) */
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias,
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) {
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]),
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -1831,7 +1832,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
 }
 
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) [data-testid="column"] {
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) [data-testid="column"] {
     flex: 0 0 auto !important;
     width: auto !important;
     min-width: auto !important;
@@ -1841,7 +1843,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
 }
 
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) div.stButton > button {
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) div.stButton > button,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) div.stButton > button {
     min-height: 34px !important;
     height: 34px !important;
     font-size: 13px !important;
@@ -1853,7 +1856,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
 
 @media (max-width: 768px) {
     div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton > button,
-    div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"]) div.stButton > button {
+    div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) div.stButton > button,
+    div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) div.stButton > button {
         font-size: 11px !important;
         padding: 4px 12px !important;
         width: max-content !important;
@@ -1863,7 +1867,8 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
 
 /* Selector de cantidad horizontal clásico en PC (➖, Qty, ➕) */
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
-div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -1875,7 +1880,8 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
 }
 
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
-div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"],
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"] {
     display: block !important;
     width: auto !important;
     max-width: none !important;
@@ -1884,22 +1890,26 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
 
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
-div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
-div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(1),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(3),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(1),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(3) {
     flex: 0 0 32px !important; /* Ancho fijo ultra compacto para los botones - 32px cabe perfecto */
     width: 32px !important;
     min-width: 32px !important;
 }
 
 div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
-div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(2),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important; /* La cantidad se expande en el medio */
     width: auto !important;
     min-width: 0 !important;
 }
 
 /* Ajustes de tamaño compacto para los botones del selector en PC */
-div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button,
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) div.stButton > button {
     height: 32px !important;
     min-height: 32px !important;
     padding: 0 !important;
@@ -1921,7 +1931,8 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
 
 @media (max-width: 768px) {
     /* Selector de cantidad integrado estilo premium exclusivo para móvil ( [ 0   -  + ] ) */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
@@ -1938,7 +1949,8 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
         box-sizing: border-box !important;
     }
 
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"],
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"] {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -1952,14 +1964,16 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     }
 
     /* Columna 2 (Val / Qty): orden 1 (izquierda) */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(2),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(2) {
         order: 1 !important;
         flex: 1 1 auto !important;
         justify-content: flex-start !important;
     }
 
     /* Columna 1 (Dec / -): orden 2 (derecha-medio) */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1) {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(1),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(1) {
         order: 2 !important;
         flex: 0 0 32px !important;
         width: 32px !important;
@@ -1967,7 +1981,8 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     }
 
     /* Columna 3 (Inc / +): orden 3 (extremo derecha) */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(3),
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(3) {
         order: 3 !important;
         flex: 0 0 32px !important;
         width: 32px !important;
@@ -1975,7 +1990,8 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
     }
 
     /* Quitar bordes y fondos de los botones de decrementar e incrementar en móvil */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) div.stButton > button {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -1991,14 +2007,17 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="s
         text-shadow: none !important;
     }
 
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button:hover,
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button:active {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button:hover,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button:active,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) div.stButton > button:hover,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) div.stButton > button:active {
         background: rgba(255, 255, 255, 0.1) !important;
         border-radius: 4px !important;
     }
 
     /* Estilo del visualizador de cantidad integrado en móvil */
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) .qty-display-premium {
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) .qty-display-premium,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) .qty-display-premium {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
