@@ -682,6 +682,9 @@ div[role="radiogroup"] {{
 # =========================================================
 
 # Decide qué mostrar en el logo flotante: video si existe URL, imagen si no
+subcats_set = {sub.upper() for subs in st.session_state.lista_categorias.values() for sub in subs}
+subcats_json = json.dumps(list(subcats_set), ensure_ascii=False)
+
 logo_flotante_html = f'<img src="{URL_LOGO}" class="mini-logo-imagen-circular" alt="Logo Guadalupe">' \
     if URL_LOGO else '<span style="color:#ffff00;font-size:28px;">🏪</span>'
 
@@ -707,7 +710,7 @@ st.markdown(f'''
 
 <!-- DOM OBSERVER PARA ACORDEONES Y GRILLAS -->
 <script>
-const subcategoriasGuadalupe = new Set({json.dumps(sorted({sub for subs in st.session_state.lista_categorias.values() for sub in subs}), ensure_ascii=False)}.map(item => item.toUpperCase()));
+const subcategoriasGuadalupe = new Set({subcats_json});
 const observer = new MutationObserver((mutations) => {{
     // 1. Expanders
     const summaries = document.querySelectorAll('div[data-testid="stExpander"] summary');
@@ -1174,38 +1177,29 @@ elif st.session_state.pantalla == "catalogo":
                     qty_key = f"qty_val_{producto}"
                     st.session_state[qty_key] = cantidad_guardada
 
-                    if st.session_state[qty_key] <= 0:
+                    col_dec, col_val, col_inc = st.columns([1, 2, 1])
+                    with col_dec:
                         st.button(
-                            "🛒 AÑADIR",
-                            key=f"btn_add_{producto}",
+                            "➖",
+                            key=f"btn_dec_{producto}",
                             use_container_width=True,
-                            on_click=añadir_producto,
+                            on_click=decrementar_producto,
                             args=(producto, paso)
                         )
-                    else:
-                        col_dec, col_val, col_inc = st.columns([1, 2, 1])
-                        with col_dec:
-                            st.button(
-                                "➖",
-                                key=f"btn_dec_{producto}",
-                                use_container_width=True,
-                                on_click=decrementar_producto,
-                                args=(producto, paso)
-                            )
-                        with col_val:
-                            cant_formateada = formatear_cantidad(st.session_state[qty_key])
-                            st.markdown(
-                                f'<div class="qty-display-premium">{cant_formateada} <small>{unidad}</small></div>',
-                                unsafe_allow_html=True
-                            )
-                        with col_inc:
-                            st.button(
-                                "➕",
-                                key=f"btn_inc_{producto}",
-                                use_container_width=True,
-                                on_click=incrementar_producto,
-                                args=(producto, paso, stock)
-                            )
+                    with col_val:
+                        cant_formateada = formatear_cantidad(st.session_state[qty_key])
+                        st.markdown(
+                            f'<div class="qty-display-premium">{cant_formateada} <small>{unidad}</small></div>',
+                            unsafe_allow_html=True
+                        )
+                    with col_inc:
+                        st.button(
+                            "➕",
+                            key=f"btn_inc_{producto}",
+                            use_container_width=True,
+                            on_click=incrementar_producto,
+                            args=(producto, paso, stock)
+                        )
 
         st.markdown('</div>', unsafe_allow_html=True)
 
