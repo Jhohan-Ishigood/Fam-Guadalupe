@@ -54,7 +54,7 @@ body {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important;
-    filter: brightness(0.68) contrast(1.02) !important;
+    filter: brightness(0.80) contrast(1.02) !important;
     opacity: 1 !important;
     background: #050509 !important;
 }
@@ -1855,9 +1855,9 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-tabs_netflix_master"
     }
 }
 
-/* Asegurar que el selector de cantidad se mantenga horizontal en PC y móvil */
-div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
+/* Asegurar que el selector de cantidad se mantenga horizontal en PC y móvil, evitando afectar grillas externas */
+div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -1865,24 +1865,46 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) {
     justify-content: space-between !important;
     width: 100% !important;
     gap: 4px !important;
+    margin-top: 6px !important;
 }
 
-div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"] {
     display: block !important;
     width: auto !important;
     max-width: none !important;
     min-width: 0 !important;
 }
 
-div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
-div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
-    flex: 0 0 42px !important; /* Ancho fijo para botones de más y menos */
+div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(1),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(3) {
+    flex: 0 0 32px !important; /* Ancho fijo ultra compacto para los botones - 32px cabe perfecto */
 }
 
-div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
-div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
+div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) > [data-testid="column"]:nth-child(2) {
     flex: 1 1 auto !important; /* La cantidad se expande en el medio */
+}
+
+/* Ajustes de tamaño compacto para los botones del selector en móvil */
+div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="st-key-btn_dec_"]) div.stButton > button {
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 !important;
+    font-size: 11px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 6px !important;
+}
+
+/* Reducir altura y texto de cantidad central para que entre cabalito debajo de la foto */
+.qty-display-premium {
+    height: 32px !important;
+    min-height: 32px !important;
+    font-size: 14px !important;
+    padding: 2px 4px !important;
+    border-radius: 6px !important;
 }
