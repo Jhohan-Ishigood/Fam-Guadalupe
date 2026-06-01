@@ -693,12 +693,18 @@ st.markdown(f'''
 <!-- VIDEO DE FONDO -->
 <div class="video-background-container pc-only">
     <video class="video-fondo-maestro" autoplay loop muted playsinline preload="metadata" poster="{URL_FONDO}" data-video-id="fondo_pc">
-        <source src="{URL_VIDEO_PC}" type="video/mp4">
+        <source src="static/videofondopc.mp4" type="video/mp4">
+        <source src="/app/static/videofondopc.mp4" type="video/mp4">
+        <source src="app/static/videofondopc.mp4" type="video/mp4">
+        <source src="https://raw.githubusercontent.com/Jhohan-Ishigood/Fam-Guadalupe/main/static/videofondopc.mp4" type="video/mp4">
     </video>
 </div>
 <div class="video-background-container movil-only">
     <video class="video-fondo-maestro" autoplay loop muted playsinline preload="metadata" poster="{URL_FONDO}" data-video-id="fondo_movil">
-        <source src="{URL_VIDEO_MOVIL}" type="video/mp4">
+        <source src="static/videofondocelular.mp4" type="video/mp4">
+        <source src="/app/static/videofondocelular.mp4" type="video/mp4">
+        <source src="app/static/videofondocelular.mp4" type="video/mp4">
+        <source src="https://raw.githubusercontent.com/Jhohan-Ishigood/Fam-Guadalupe/main/static/videofondocelular.mp4" type="video/mp4">
     </video>
 </div>
 <div class="video-overlay-legibilidad"></div>
@@ -823,23 +829,41 @@ function cerrarSidebarMovilInicial() {{
 }}
 cerrarSidebarMovilInicial();
 
-// Mantiene el video de fondo cerca del punto donde iba tras cada rerender de Streamlit.
+// Mantiene el video de fondo cerca del punto donde iba tras cada rerender de Streamlit y fuerza la reproducción.
 function estabilizarVideosDeFondo() {{
     document.querySelectorAll('video[data-video-id]').forEach(video => {{
         const key = 'guadalupe_video_time_' + video.dataset.videoId;
         const saved = Number(sessionStorage.getItem(key) || 0);
+        
+        const playVideo = () => {{
+            video.play().catch(err => {{
+                console.log("Autoplay bloqueado o falló: ", err);
+            }});
+        }};
+
         if (saved && Number.isFinite(saved)) {{
             const restore = () => {{
                 try {{
                     if (video.duration && saved < video.duration) video.currentTime = saved;
                 }} catch (e) {{}}
+                playVideo();
             }};
             video.addEventListener('loadedmetadata', restore, {{ once: true }});
             if (video.readyState >= 1) restore();
+        }} else {{
+            playVideo();
         }}
+
         video.addEventListener('timeupdate', () => {{
             try {{ sessionStorage.setItem(key, String(video.currentTime)); }} catch (e) {{}}
         }});
+
+        // Monitoreo continuo para evitar que se pause o quede estático en dispositivos móviles o tras rerenders
+        setInterval(() => {{
+            if (video.paused) {{
+                playVideo();
+            }}
+        }}, 1000);
     }});
 }}
 estabilizarVideosDeFondo();
@@ -903,7 +927,12 @@ if st.session_state.pantalla == "bienvenida":
     # ── LOGO CENTRAL CON DESTELLO METÁLICO ──
     # Usa video si está disponible, sino imagen con fallback emoji
     if URL_VIDEO_LOGO:
-        contenido_logo = f'<video autoplay loop muted playsinline preload="metadata" poster="{URL_LOGO}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><source src="{URL_VIDEO_LOGO}" type="video/mp4"></video>'
+        contenido_logo = f'''<video autoplay loop muted playsinline preload="metadata" poster="{URL_LOGO}" data-video-id="logo_video" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+            <source src="static/logovideo.mp4" type="video/mp4">
+            <source src="/app/static/logovideo.mp4" type="video/mp4">
+            <source src="app/static/logovideo.mp4" type="video/mp4">
+            <source src="https://raw.githubusercontent.com/Jhohan-Ishigood/Fam-Guadalupe/main/static/logovideo.mp4" type="video/mp4">
+        </video>'''
     elif URL_LOGO:
         contenido_logo = f'<img src="{URL_LOGO}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="Logo Guadalupe">'
     else:
@@ -1093,6 +1122,7 @@ elif st.session_state.pantalla == "catalogo":
     if "Todos" not in subcategorias:
         subcategorias = ["Todos"] + subcategorias
         
+    st.markdown('<div class="grilla-netflix-subcategorias">', unsafe_allow_html=True)
     cols_tabs = st.columns(len(subcategorias))
     for i, subcat in enumerate(subcategorias):
         with cols_tabs[i]:
@@ -1104,6 +1134,7 @@ elif st.session_state.pantalla == "catalogo":
                 on_click=cambiar_subcategoria,
                 args=(subcat,)
             )
+    st.markdown('</div>', unsafe_allow_html=True)
 
     categoria_sel = st.session_state.categoria_activa
 
@@ -1177,6 +1208,7 @@ elif st.session_state.pantalla == "catalogo":
                     qty_key = f"qty_val_{producto}"
                     st.session_state[qty_key] = cantidad_guardada
 
+                    st.markdown('<div class="contenedor-qty-selector">', unsafe_allow_html=True)
                     col_dec, col_val, col_inc = st.columns([1, 2, 1])
                     with col_dec:
                         st.button(
@@ -1200,6 +1232,7 @@ elif st.session_state.pantalla == "catalogo":
                             on_click=incrementar_producto,
                             args=(producto, paso, stock)
                         )
+                    st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown('</div>', unsafe_allow_html=True)
 
