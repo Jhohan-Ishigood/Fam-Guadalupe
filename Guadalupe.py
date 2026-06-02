@@ -810,6 +810,18 @@ const observer = new MutationObserver((mutations) => {{
         }}
     }});
 
+    // 6b. Contenedor de cantidad premium
+    document.querySelectorAll('[data-testid^="stWidgetKey-btn_dec_"], [data-testid^="stWidgetKey-btn_inc_"]').forEach(widget => {{
+        const button = widget.querySelector('button');
+        if (button) {{
+            button.classList.add('btn-qty-action');
+        }}
+        const horizontalBlock = widget.closest('[data-testid="stHorizontalBlock"]');
+        if (horizontalBlock) {{
+            horizontalBlock.classList.add('contenedor-qty-selector');
+        }}
+    }});
+
     // 7. Solución para cerrar selectbox al hacer clic en el trigger nuevamente en móvil
     document.querySelectorAll('div[data-testid="stSelectbox"]').forEach(selectbox => {{
         const trigger = selectbox.querySelector('div[role="combobox"], input');
@@ -1227,24 +1239,24 @@ elif st.session_state.pantalla == "catalogo":
                     qty_key = f"qty_val_{producto}"
                     st.session_state[qty_key] = cantidad_guardada
 
-                    col_dec, col_val, col_inc = st.columns([1, 2, 1])
-                    with col_dec:
-                        st.button(
-                            "➖",
-                            key=f"btn_dec_{producto}",
-                            use_container_width=True,
-                            on_click=decrementar_producto,
-                            args=(producto, paso)
-                        )
+                    col_val, col_dec, col_inc = st.columns([2, 1, 1])
                     with col_val:
                         cant_formateada = formatear_cantidad(st.session_state[qty_key])
                         st.markdown(
                             f'<div class="qty-display-premium">{cant_formateada} <small>{unidad}</small></div>',
                             unsafe_allow_html=True
                         )
+                    with col_dec:
+                        st.button(
+                            "-",
+                            key=f"btn_dec_{producto}",
+                            use_container_width=True,
+                            on_click=decrementar_producto,
+                            args=(producto, paso)
+                        )
                     with col_inc:
                         st.button(
-                            "➕",
+                            "+",
                             key=f"btn_inc_{producto}",
                             use_container_width=True,
                             on_click=incrementar_producto,
