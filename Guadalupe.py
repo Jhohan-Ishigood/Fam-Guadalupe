@@ -483,12 +483,19 @@ def render_panel_pedido_movil():
 <span>{item["producto"]}</span>
 <b>{formatear_cantidad(item["cantidad"])} {item.get("unidad", "unidad")} · S/{item["subtotal"]:.2f}</b>
 </div>'''
-    st.markdown(f'''<div class="pedido-bottom-sheet">
+
+    # Animación de pop/parpadeo si hubo una actualización reciente de cantidad
+    momento_anim = st.session_state.get("momento_animacion", 0.0)
+    es_reciente = (time.time() - momento_anim) < 1.8
+    clase_animacion = " animar-carrito-pop" if es_reciente else ""
+
+    st.markdown(f'''<div class="pedido-bottom-sheet{clase_animacion}">
 <input id="pedido-sheet-toggle" class="pedido-sheet-toggle" type="checkbox">
 <label for="pedido-sheet-toggle" class="pedido-sheet-handle">
 <span class="pedido-sheet-barra"></span>
+<span class="pedido-sheet-titulo">📝 Productos seleccionados hasta ahora:</span>
 <strong>🛒 {len(st.session_state.carrito)} productos · S/{st.session_state.total:.2f}</strong>
-<small>Desliza hacia arriba</small>
+<small>👉 Aplasta para ver tu lista completa</small>
 </label>
 <div class="pedido-sheet-contenido">
 {items_html}
