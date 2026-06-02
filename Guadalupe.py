@@ -811,14 +811,25 @@ const observer = new MutationObserver((mutations) => {{
     }});
 
     // 6b. Contenedor de cantidad premium
-    document.querySelectorAll('[data-testid^="stWidgetKey-btn_dec_"], [data-testid^="stWidgetKey-btn_inc_"]').forEach(widget => {{
-        const button = widget.querySelector('button');
-        if (button) {{
+    document.querySelectorAll('button').forEach(button => {{
+        const text = (button.textContent || '').trim();
+        if (text === '-' || text === '+') {{
             button.classList.add('btn-qty-action');
-        }}
-        const horizontalBlock = widget.closest('[data-testid="stHorizontalBlock"]');
-        if (horizontalBlock) {{
-            horizontalBlock.classList.add('contenedor-qty-selector');
+            const horizontalBlock = button.closest('[data-testid="stHorizontalBlock"]');
+            if (horizontalBlock) {{
+                horizontalBlock.classList.add('contenedor-qty-selector');
+                
+                // Determinar si la cantidad es mayor a 0 para pintar el botón + de verde brilloso
+                const qtyDisplay = horizontalBlock.querySelector('.qty-display-premium');
+                if (qtyDisplay) {{
+                    const qtyVal = parseFloat(qtyDisplay.textContent || '0');
+                    if (qtyVal > 0) {{
+                        horizontalBlock.classList.add('has-quantity');
+                    }} else {{
+                        horizontalBlock.classList.remove('has-quantity');
+                    }}
+                }}
+            }}
         }}
     }});
 

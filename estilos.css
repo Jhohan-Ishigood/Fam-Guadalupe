@@ -1924,6 +1924,15 @@ button.btn-qty-action:hover {
     box-shadow: 0 0 12px rgba(0, 255, 102, 0.3) !important;
 }
 
+/* Si la cantidad es > 0, el botón '+' (último hijo) se vuelve verde brilloso sólido */
+div.contenedor-qty-selector.has-quantity > div:nth-child(3) button.btn-qty-action {
+    background: #00ff66 !important;
+    border-color: #00ff66 !important;
+    color: #000000 !important;
+    box-shadow: 0 0 14px rgba(0, 255, 102, 0.45) !important;
+    text-shadow: none !important;
+}
+
 @media (max-width: 768px) {
     /* Ajustes táctiles ultra limpios para móvil */
     .qty-display-premium {
