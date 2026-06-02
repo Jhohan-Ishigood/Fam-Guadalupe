@@ -394,14 +394,24 @@ div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"])::-we
 
 /* Forzar que las columnas de Streamlit dentro del scroll no se apilen y tengan ancho automático */
 div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias [data-testid="column"],
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias [data-testid="stVerticalBlock"],
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias .element-container,
+div[data-testid="stHorizontalBlock"].grilla-netflix-subcategorias div.stButton,
 div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) [data-testid="column"],
-div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) [data-testid="column"] {
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) [data-testid="stVerticalBlock"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) .element-container,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs_netflix_master"]) div.stButton,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) [data-testid="column"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) [data-testid="stVerticalBlock"],
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) .element-container,
+div[data-testid="stHorizontalBlock"]:has(div[class*="tabs-netflix-master"]) div.stButton {
     flex: 0 0 auto !important;
     width: auto !important;
     min-width: auto !important;
     max-width: none !important;
     display: block !important;
     margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Forzar ancho automático y forma de píldora en los botones de subcategoría */
@@ -1895,6 +1905,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
 
 @media (max-width: 768px) {
     /* Selector de cantidad integrado estilo premium exclusivo para móvil ( [ 0   -  + ] ) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) {
         display: flex !important;
@@ -1913,6 +1924,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
         box-sizing: border-box !important;
     }
 
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"],
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"],
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"] {
         background: transparent !important;
@@ -1928,6 +1940,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
     }
 
     /* Columna 2 (Val / Qty): orden 1 (izquierda) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(2),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(2),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(2) {
         order: 1 !important;
@@ -1936,6 +1949,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
     }
 
     /* Columna 1 (Dec / -): orden 2 (derecha-medio) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(1),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(1),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(1) {
         order: 2 !important;
@@ -1945,6 +1959,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
     }
 
     /* Columna 3 (Inc / +): orden 3 (extremo derecha) */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > [data-testid="column"]:nth-child(3),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) > [data-testid="column"]:nth-child(3),
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) > [data-testid="column"]:nth-child(3) {
         order: 3 !important;
@@ -1954,6 +1969,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
     }
 
     /* Quitar bordes y fondos de los botones de decrementar e incrementar en móvil */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector div.stButton > button,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) div.stButton > button {
         background: transparent !important;
@@ -1971,6 +1987,8 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
         text-shadow: none !important;
     }
 
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector div.stButton > button:hover,
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector div.stButton > button:active,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button:hover,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) div.stButton > button:active,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) div.stButton > button:hover,
@@ -1980,6 +1998,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
     }
 
     /* Estilo del visualizador de cantidad integrado en móvil */
+    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector .qty-display-premium,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn_dec_"]) .qty-display-premium,
     div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="btn-dec-"]) .qty-display-premium {
         background: transparent !important;
@@ -1995,3 +2014,4 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"]:has(div[class*="b
         text-shadow: 0 0 4px rgba(255, 255, 0, 0.4) !important;
     }
 }
+
