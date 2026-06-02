@@ -1660,7 +1660,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         position: fixed !important;
         left: 8px !important;
         right: 8px !important;
-        bottom: 0 !important;
+        bottom: 24px !important; /* Subir un poco más arriba en la pantalla en celular */
         z-index: 999990 !important;
         display: block !important;
         pointer-events: none !important;
@@ -1674,20 +1674,20 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 
     .pedido-sheet-handle {
         pointer-events: auto !important;
-        min-height: 72px !important;
-        border-radius: 16px 16px 0 0 !important;
-        border: 1px solid rgba(255,255,0,0.72) !important;
-        border-bottom: none !important;
-        background: rgba(8,10,18,0.94) !important;
-        box-shadow: 0 -8px 24px rgba(0,0,0,0.55), 0 0 18px rgba(255,255,0,0.22) !important;
+        min-height: 76px !important;
+        border-radius: 16px !important; /* Totalmente redondeado por flotar */
+        border: 1.5px solid rgba(255,255,0,0.85) !important;
+        background: rgba(8,10,18,0.96) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 20px rgba(255,255,0,0.3) !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 2px !important;
+        gap: 4px !important;
         color: #ffffff !important;
         cursor: pointer !important;
         backdrop-filter: blur(14px) !important;
+        transition: border-radius 0.2s ease !important;
     }
 
     .pedido-sheet-barra {
@@ -1700,13 +1700,13 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 
     .pedido-sheet-handle strong {
         color: #ffff00 !important;
-        font-size: 14px !important;
+        font-size: 18px !important; /* Letras más grandes en celular */
         font-weight: 900 !important;
     }
 
     .pedido-sheet-handle small {
         color: #dcdcdc !important;
-        font-size: 11px !important;
+        font-size: 13px !important; /* Letras más grandes en celular */
         font-weight: 800 !important;
     }
 
@@ -1715,15 +1715,20 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         max-height: 0 !important;
         overflow-y: auto !important;
         background: rgba(8,10,18,0.96) !important;
-        border-left: 1px solid rgba(255,255,0,0.72) !important;
-        border-right: 1px solid rgba(255,255,0,0.72) !important;
+        border: 1.5px solid rgba(255,255,0,0.85) !important;
+        border-top: none !important;
+        border-radius: 0 0 16px 16px !important;
         padding: 0 12px !important;
         transition: max-height 0.32s ease, padding 0.32s ease !important;
     }
 
     .pedido-sheet-toggle:checked ~ .pedido-sheet-contenido {
-        max-height: calc(50vh - 72px) !important;
+        max-height: calc(50vh - 76px) !important;
         padding: 8px 12px 14px 12px !important;
+    }
+
+    .pedido-sheet-toggle:checked + .pedido-sheet-handle {
+        border-radius: 16px 16px 0 0 !important; /* Se aplana abajo para encajar con el contenido */
     }
 
     .pedido-sheet-toggle:checked + .pedido-sheet-handle small {
@@ -1732,7 +1737,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 
     .pedido-sheet-toggle:checked + .pedido-sheet-handle small::after {
         content: "Toca para cerrar" !important;
-        font-size: 11px !important;
+        font-size: 13px !important; /* Letras más grandes en celular */
     }
 
     .bottom-sheet-item {
@@ -1742,7 +1747,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
         padding: 9px 0 !important;
         border-bottom: 1px solid rgba(255,255,255,0.08) !important;
         color: #ffffff !important;
-        font-size: 12px !important;
+        font-size: 14px !important; /* Letras más grandes para los productos agregados */
     }
 
     .bottom-sheet-item span {
@@ -1843,7 +1848,7 @@ div[data-testid="stHorizontalBlock"]:has(.tarjeta-categoria-principal) div.stBut
 }
 
 /* Contenedor principal de la fila (stHorizontalBlock) */
-div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector {
+div.contenedor-qty-selector {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
@@ -1859,7 +1864,7 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-se
 }
 
 /* Forzar que las columnas dentro del selector no se apilen y tengan el comportamiento horizontal */
-div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > div {
+div.contenedor-qty-selector > div {
     flex: 0 0 auto !important;
     width: auto !important;
     min-width: auto !important;
@@ -1870,19 +1875,19 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-se
 }
 
 /* Columna 1: Display de cantidad (izquierda) */
-div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > div:nth-child(1) {
+div.contenedor-qty-selector > div:nth-child(1) {
     flex: 1 1 auto !important; /* Crece para ocupar todo el espacio disponible */
     min-width: 0 !important;
 }
 
 /* Columna 2: Botón decrementar (-) */
-div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > div:nth-child(2) {
+div.contenedor-qty-selector > div:nth-child(2) {
     flex: 0 0 38px !important;
     width: 38px !important;
 }
 
 /* Columna 3: Botón incrementar (+) */
-div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > div:nth-child(3) {
+div.contenedor-qty-selector > div:nth-child(3) {
     flex: 0 0 38px !important;
     width: 38px !important;
 }
@@ -1891,9 +1896,9 @@ div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-se
 button.btn-qty-action {
     background: rgba(15, 15, 20, 0.9) !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
-    font-size: 16px !important;
-    font-weight: 700 !important;
+    color: #00ff66 !important; /* Color verde brilloso premium */
+    font-size: 22px !important; /* Más grande el más y el menos */
+    font-weight: 900 !important; /* Negrita pesada para que resalte */
     height: 38px !important;
     min-height: 38px !important;
     width: 38px !important;
@@ -1902,9 +1907,10 @@ button.btn-qty-action {
     align-items: center !important;
     justify-content: center !important;
     border-radius: 6px !important;
-    box-shadow: none !important;
+    box-shadow: 0 0 8px rgba(0, 255, 102, 0.15) !important; /* Sutil resplandor verde */
     text-transform: none !important;
     transition: all 0.2s ease !important;
+    text-shadow: 0 0 4px rgba(0, 255, 102, 0.5) !important;
 }
 
 button.btn-qty-action::before {
@@ -1912,9 +1918,10 @@ button.btn-qty-action::before {
 }
 
 button.btn-qty-action:hover {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    color: #ffffff !important;
+    background: rgba(0, 255, 102, 0.1) !important;
+    border-color: rgba(0, 255, 102, 0.4) !important;
+    color: #00ff66 !important;
+    box-shadow: 0 0 12px rgba(0, 255, 102, 0.3) !important;
 }
 
 @media (max-width: 768px) {
@@ -1930,15 +1937,15 @@ button.btn-qty-action:hover {
         min-height: 36px !important;
         width: 36px !important;
         min-width: 36px !important;
-        font-size: 15px !important;
+        font-size: 22px !important; /* Mantener el tamaño grande en celular */
     }
     
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > div:nth-child(2) {
+    div.contenedor-qty-selector > div:nth-child(2) {
         flex: 0 0 36px !important;
         width: 36px !important;
     }
     
-    div[data-testid="column"] div[data-testid="stHorizontalBlock"].contenedor-qty-selector > div:nth-child(3) {
+    div.contenedor-qty-selector > div:nth-child(3) {
         flex: 0 0 36px !important;
         width: 36px !important;
     }
