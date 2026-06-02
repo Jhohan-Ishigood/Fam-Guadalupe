@@ -412,7 +412,7 @@ def nueva_orden():
 def render_datos_pago(titulo="DATOS DE PAGO", compacto=False, desplegable=False):
     if desplegable:
         st.markdown(f'<div class="datos-pago-bloque compacto"><h2>{titulo}</h2></div>', unsafe_allow_html=True)
-        with st.expander("🏦 BANCO DE LA NACIÓN"):
+        with st.expander("🏦 BANCO DE LA NACIÓN "):
             st.markdown('''
             <div class="pago-detalle-premium pago-banco-detalle">
                 <span>Cuenta bancaria</span>
@@ -422,7 +422,7 @@ def render_datos_pago(titulo="DATOS DE PAGO", compacto=False, desplegable=False)
             </div>
             ''', unsafe_allow_html=True)
 
-        with st.expander("🟣 YAPE — +51 950 239 350"):
+        with st.expander("🟣 QR Y NÚMERO DE YAPE OFICIAL"):
             qr_html = f'<img class="qr-yape-premium" src="{URL_QR}" alt="QR Yape">' if URL_QR else ""
             st.markdown(f'''
             <div class="pago-detalle-premium pago-yape-detalle">
@@ -971,7 +971,7 @@ if st.session_state.pantalla == "bienvenida":
     st.markdown(
         "<p style='text-align:center;color:#ffff00;font-size:22px;font-weight:bold;"
         "text-shadow:0 0 15px rgba(255,255,0,0.6);margin-bottom:0;'>"
-        "CATÁLOGO PREMIUM DE PRODUCTOS 🔥</p>",
+        "CATÁLOGO Y PRECIO OFICIAL DE LOS PRODUCTOS DISPONIBLES</p>",
         unsafe_allow_html=True
     )
 
@@ -1056,7 +1056,7 @@ if st.session_state.pantalla == "bienvenida":
         </div>
         ''', unsafe_allow_html=True)
 
-    with st.expander("🟣 YAPE — +51 950 239 350"):
+    with st.expander("🟣 QR Y NÚMERO DE YAPE OFICIAL"):
         if URL_QR:
             st.markdown(f'''
             <div class="yape-qr-box">
