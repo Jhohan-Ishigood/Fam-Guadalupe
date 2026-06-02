@@ -714,7 +714,7 @@ st.markdown(f'''
     {logo_flotante_html}
 </div>
 
-// DOM OBSERVER PARA ACORDEONES Y GRILLAS
+<!-- DOM OBSERVER PARA ACORDEONES Y GRILLAS -->
 <script>
 const subcategoriasGuadalupe = new Set({subcats_json});
 const observer = new MutationObserver((mutations) => {{
@@ -810,25 +810,7 @@ const observer = new MutationObserver((mutations) => {{
         }}
     }});
 
-    // 8. Botones de decremento e incremento y su contenedor
-    document.querySelectorAll('button').forEach(button => {{
-        const text = (button.textContent || '').trim();
-        if (text === '➖') {{
-            button.classList.add('btn-guadalupe-dec');
-            const block = button.closest('[data-testid="stHorizontalBlock"]');
-            if (block) {{
-                block.classList.add('contenedor-qty-selector');
-            }}
-        }} else if (text === '➕') {{
-            button.classList.add('btn-guadalupe-inc');
-            const block = button.closest('[data-testid="stHorizontalBlock"]');
-            if (block) {{
-                block.classList.add('contenedor-qty-selector');
-            }}
-        }}
-    }});
-
-    // 7. Solución para cerrar selectbox al hacer clic en el trigger nuevamente en móvil y PC
+    // 7. Solución para cerrar selectbox al hacer clic en el trigger nuevamente en móvil
     document.querySelectorAll('div[data-testid="stSelectbox"]').forEach(selectbox => {{
         const trigger = selectbox.querySelector('div[role="combobox"], input');
         if (!trigger || trigger.dataset.selectboxListenerAdded) return;
@@ -837,19 +819,16 @@ const observer = new MutationObserver((mutations) => {{
         const handler = (e) => {{
             const popover = document.querySelector('div[data-baseweb="popover"]');
             if (popover) {{
-                e.preventDefault();
-                e.stopPropagation();
-                trigger.blur();
-                const backdrop = popover.previousElementSibling;
-                if (backdrop) {{
-                    backdrop.click();
-                }} else {{
+                // Quitar foco para cerrar el desplegable
+                setTimeout(() => {{
+                    trigger.blur();
+                    // Simular clic en el body fuera del popover para cerrarlo
                     document.body.click();
-                }}
+                }}, 50);
             }}
         }};
-        trigger.addEventListener('click', handler, true);
-        trigger.addEventListener('touchstart', handler, {{passive: false, capture: true}});
+        trigger.addEventListener('click', handler);
+        trigger.addEventListener('touchstart', handler, {{passive: true}});
     }});
 }});
 observer.observe(document.body, {{ childList: true, subtree: true }});
